@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    // https://gradle-pitest-plugin.solidsoft.info/
+    id 'info.solidsoft.pitest' version '1.15.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spock test dependencies
+    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
+    // Junit dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
+}
+
+//java {
+//    toolchain {
+//        languageVersion = JavaLanguageVersion.of(17)
+//    }
+//}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "started", "passed", "skipped", "failed"
+    }
+}
+
+pitest {
+    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
+//    pitestVersion = '1.15.0' //not needed when a default PIT version should be used
+
+    //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
+    junit5PluginVersion = '1.0.0'    //or 0.15 for PIT <1.9.0
+
+//    threads = 4
+//    outputFormats = ['XML', 'HTML']
+//    timestampedReports = false
+}
