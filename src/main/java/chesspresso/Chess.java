@@ -72,7 +72,7 @@ public abstract class Chess
      *@param row the row (rank)
      *@return the square index
      */
-    public static final int coorToSqi(int col, int row)
+    public static int coorToSqi(int col, int row)
     {
         return row * NUM_OF_COLS + col;
     }
@@ -83,7 +83,7 @@ public abstract class Chess
      *@param sqi the square index
      *@return the row
      */
-    public static final int sqiToRow(int sqi)
+    public static int sqiToRow(int sqi)
     {
         return sqi / NUM_OF_COLS;
     }
@@ -94,7 +94,7 @@ public abstract class Chess
      *@param sqi the square index
      *@return the column
      */
-    public static final int sqiToCol(int sqi)
+    public static int sqiToCol(int sqi)
     {
         return sqi % NUM_OF_COLS;
     }
@@ -106,7 +106,7 @@ public abstract class Chess
      *@param sqi2 the other square index
      *@return the row difference from sqi1 to sqi2
      */
-    public static final int deltaRow(int sqi1, int sqi2)
+    public static int deltaRow(int sqi1, int sqi2)
     {
         return (sqi2 / NUM_OF_COLS) - (sqi1 / NUM_OF_COLS);
     }
@@ -118,7 +118,7 @@ public abstract class Chess
      *@param sqi2 the other square index
      *@return the column difference from sqi1 to sqi2
      */
-    public static final int deltaCol(int sqi1, int sqi2)
+    public static int deltaCol(int sqi1, int sqi2)
     {
         return (sqi2 % NUM_OF_COLS) - (sqi1 % NUM_OF_COLS);
     }
@@ -129,7 +129,7 @@ public abstract class Chess
      *@param col the column
      *@return the character representing the column
      */
-    public static final char colToChar(int col)
+    public static char colToChar(int col)
     {
         final char c[] = {'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         return c[col+1];
@@ -142,7 +142,7 @@ public abstract class Chess
      *@param row the row
      *@return the character representing the column
      */
-    public static final char rowToChar(int row)
+    public static char rowToChar(int row)
     {
         final char r[] = {'-', '1', '2', '3', '4', '5', '6', '7', '8'};
         return r[row+1];
@@ -155,7 +155,7 @@ public abstract class Chess
      *@param sqi the square
      *@return the algebraic representation
      */
-    public static final String sqiToStr(int sqi)
+    public static String sqiToStr(int sqi)
     {
         return new StringBuffer().append(colToChar(sqiToCol(sqi))).append(rowToChar(sqiToRow(sqi))).toString();
     }
@@ -166,7 +166,7 @@ public abstract class Chess
      *@param sqi the square
      *@return whether sqi is a white square
      */
-    public static final boolean isWhiteSquare(int sqi)
+    public static boolean isWhiteSquare(int sqi)
     {
         return ((sqiToCol(sqi) + sqiToRow(sqi)) % 2) != 0;
     }
@@ -177,7 +177,7 @@ public abstract class Chess
      *@param ch the column character ('a'..'h')
      *@return the column, or <code>NO_COL</code> if an illegal character is passed
      */
-    public static final int charToCol(char ch)
+    public static int charToCol(char ch)
     {
         if ((ch >= 'a') && (ch <= 'h')) {
             return (int)(ch - 'a');
@@ -192,7 +192,7 @@ public abstract class Chess
      *@param ch the row character ('1'..'8')
      *@return the column, or <code>NO_ROW</code> if an illegal character is passed
      */
-    public static final int charToRow(char ch)
+    public static int charToRow(char ch)
     {
         if ((ch >= '1') && (ch <= '8')) {
             return (int)(ch - '1');
@@ -207,7 +207,7 @@ public abstract class Chess
      *@param s the algebraic square representation
      *@return the square index, or <code>NO_SQUARE</code> if an illegal string is passed
      */
-    public static final int strToSqi(String s)
+    public static int strToSqi(String s)
     {
         if (s == null || s.length() != 2) return NO_SQUARE;
         int col = charToCol(s.charAt(0)); if (col == NO_COL) return NO_SQUARE;
@@ -222,7 +222,7 @@ public abstract class Chess
      *@param rowCh the column character // TODO
      *@return the square index, or <code>NO_SQUARE</code> if an illegal character is passed
      */
-    public static final int strToSqi(char colCh, char rowCh)
+    public static int strToSqi(char colCh, char rowCh)
     {
         int col = charToCol(colCh); if (col == NO_COL) return NO_SQUARE;
         int row = charToRow(rowCh); if (row == NO_ROW) return NO_SQUARE;
@@ -254,7 +254,7 @@ public abstract class Chess
      *@param stone the colored piece
      *@return the color of the stone
      */
-    public static final int stoneToColor(int stone)
+    public static int stoneToColor(int stone)
     {
         if      (stone < 0) {return WHITE;}
         else if (stone > 0) {return BLACK;}
@@ -268,7 +268,7 @@ public abstract class Chess
      *@param color the color to test for
      *@return the true iff the stone is of the given color
      */
-    public static final boolean stoneHasColor(int stone, int color)
+    public static boolean stoneHasColor(int stone, int color)
     {
         return (color == WHITE && stone < 0) || (color == BLACK && stone > 0);
     }
@@ -279,7 +279,7 @@ public abstract class Chess
      *@param stone the colored piece
      *@return the piece
      */
-    public static final int stoneToPiece(int stone)
+    public static int stoneToPiece(int stone)
     {
         if (stone < 0) return -stone; else return stone;
     }
@@ -290,7 +290,7 @@ public abstract class Chess
      *@param stone the colored piece
      *@return the stone with inverse color
      */
-    public static final int getOpponentStone(int stone)
+    public static int getOpponentStone(int stone)
     {
         return -stone;
     }
@@ -301,7 +301,7 @@ public abstract class Chess
      *@param ch a piece character
      *@return the piece represented by the character, or <code>NO_PIECE</code> if illegal
      */
-    public static final int charToPiece(char ch)
+    public static int charToPiece(char ch)
     {
         for (int piece=0; piece < pieceChars.length; piece++) {
             if (pieceChars[piece] == ch) return piece;
@@ -315,7 +315,7 @@ public abstract class Chess
      *@param piece the piece
      *@return the character representing the piece, or '?' if an illegal piece is passed
      */
-    public static final char pieceToChar(int piece)
+    public static char pieceToChar(int piece)
     {
         if (piece < 0 || piece > MAX_PIECE) return '?';
         return pieceChars[piece];
@@ -327,7 +327,7 @@ public abstract class Chess
      *@param stone the stone
      *@return the character representing the stone, or '?' if an illegal piece is passed
      */
-    public static final char stoneToChar(int stone)
+    public static char stoneToChar(int stone)
     {
         if (stone < 0) return pieceChars[-stone]; else return pieceChars[stone];
     }
@@ -339,7 +339,7 @@ public abstract class Chess
      *@param color the color
      *@return the stone, or <code>NO_PIECE</code> if illegal
      */
-    public static final int pieceToStone(int piece, int color)
+    public static int pieceToStone(int piece, int color)
     {
         if      (color == WHITE) {return -piece;}
         else if (color == BLACK) {return  piece;}
@@ -358,7 +358,7 @@ public abstract class Chess
      *@param player the player (or color)
      *@return the opposite player (color respectively)
      */
-    public static final int otherPlayer(int player)
+    public static int otherPlayer(int player)
     {
         return 1-player;
     }
