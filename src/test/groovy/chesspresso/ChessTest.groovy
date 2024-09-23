@@ -116,15 +116,98 @@ class ChessTest extends Specification {
         strToSqi('h' as char, '9' as char) == NO_SQUARE
     }
 
-    // stoneToColor
-    // stoneHasColor
-    // stoneToPiece
-    // charToPiece
-    // pieceToChar
-    // stoneToChar
-    // pieceToStone
-    // otherPlayer
-    // isWhitePly
-    // plyToMoveNumber
+    def 'stoneToColor'() {
+        expect:
+        stoneToColor(WHITE_KING) == WHITE
+        stoneToColor(WHITE_KNIGHT) == WHITE
+        stoneToColor(BLACK_BISHOP) == BLACK
+        stoneToColor(BLACK_KNIGHT) == BLACK
+        stoneToColor(NO_STONE) == NOBODY
+    }
+
+    def 'stoneHasColor'() {
+        expect:
+        stoneHasColor(WHITE_KING, WHITE)
+        stoneHasColor(WHITE_KNIGHT, WHITE)
+        stoneHasColor(BLACK_BISHOP, BLACK)
+    }
+
+    def 'stoneToPiece'() {
+        expect:
+        stoneToPiece(WHITE_KNIGHT) == KNIGHT
+        stoneToPiece(BLACK_ROOK) == ROOK
+    }
+
+    def 'getOpponentStone'() {
+        expect:
+        getOpponentStone(NO_STONE) == NO_STONE
+        getOpponentStone(WHITE_KNIGHT) == BLACK_KNIGHT
+        getOpponentStone(BLACK_KNIGHT) == WHITE_KNIGHT
+    }
+
+    def 'charToPiece'() {
+        expect:
+        charToPiece('N' as char) == KNIGHT
+        charToPiece('R' as char) == ROOK
+        charToPiece('r' as char) == NO_PIECE
+    }
+
+    def 'pieceToChar'() {
+        expect:
+        pieceToChar(ROOK) == 'R' as char
+        pieceToChar(QUEEN) == 'Q' as char
+        pieceToChar(WHITE_ROOK) == '?' as char
+        pieceToChar(MAX_PIECE + 1) == '?' as char
+        pieceToChar(NO_PIECE) == ' ' as char
+        pieceToChar(MAX_PIECE) == 'K' as char
+    }
+
+    def 'stoneToChar'() {
+        expect:
+        stoneToChar(WHITE_ROOK) == 'R' as char
+        stoneToChar(BLACK_KNIGHT) == 'N' as char
+        stoneToChar(WHITE_KNIGHT) == 'N' as char
+        stoneToChar(MAX_STONE) == 'K' as char
+        stoneToChar(MIN_STONE) == 'K' as char
+        stoneToChar(NO_STONE) == ' ' as char
+    }
+
+    def 'stoneToChar - illegal args'() {
+        when:
+        stoneToChar(stone)
+        then:
+        thrown(ArrayIndexOutOfBoundsException)
+        where:
+        stone         || _
+        MAX_STONE + 1 || _
+        MIN_STONE - 1 || _
+    }
+
+    def 'pieceToStone'() {
+        expect:
+        pieceToStone(KNIGHT, BLACK) == BLACK_KNIGHT
+        pieceToStone(ROOK, WHITE) == WHITE_ROOK
+        pieceToStone(ROOK, 2) == NO_PIECE
+    }
+
+    def 'otherPlayer'() {
+        expect:
+        otherPlayer(WHITE) == BLACK
+        otherPlayer(BLACK) == WHITE
+        otherPlayer(NOBODY) == 2
+    }
+
+    def 'isWhitePly'() {
+        expect:
+        isWhitePly(0)
+        !isWhitePly(1)
+    }
+
+    def 'plyToMoveNumber'() {
+        expect:
+        plyToMoveNumber(0) == 1
+        plyToMoveNumber(1) == 1
+        plyToMoveNumber(2) == 2
+    }
 
 }
