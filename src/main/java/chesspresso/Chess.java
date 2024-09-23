@@ -218,8 +218,8 @@ public abstract class Chess
     /**
      * Converts a col and row character pair to a square index.
      *
-     *@param colCh the row character // TODO
-     *@param rowCh the column character // TODO
+     *@param colCh the column character
+     *@param rowCh the row character
      *@return the square index, or <code>NO_SQUARE</code> if an illegal character is passed
      */
     public static int strToSqi(char colCh, char rowCh)
