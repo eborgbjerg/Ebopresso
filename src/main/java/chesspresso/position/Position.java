@@ -1250,7 +1250,14 @@ public final class Position extends AbstractMoveablePosition
         }
         return Chess.NO_SQUARE;
     }
-    
+
+    /**
+     * Get pawn move based on square information (and promotion if applicable)
+     * @param colFrom move from col if move is a capture, NO_COL otherwise
+     * @param to move to square
+     * @param promoPiece promotion piece, if any
+     * @return pawn move
+     */
     public short getPawnMove(int colFrom, int to, int promoPiece)
     {
 //        if (getColor(from) != getToPlay()) throw new ChIllegalMoveException("Wrong color");
@@ -1266,7 +1273,15 @@ public final class Position extends AbstractMoveablePosition
             return Move.getPawnMove(from, to, true, promoPiece);
         }
     }
-    
+
+    /**
+     * Get a move from Piece + square information.
+     * @param piece a Piece
+     * @param colFrom move from col
+     * @param rowFrom move from row
+     * @param to move to square
+     * @return a legal move, if permissible
+     */
     public short getPieceMove(int piece, int colFrom, int rowFrom, int to)
     {
         return Move.getRegularMove(getFromSqi(piece, colFrom, rowFrom, to), to, !isSquareEmpty(to));

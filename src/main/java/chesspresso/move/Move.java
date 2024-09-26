@@ -131,11 +131,12 @@ public class Move
         LONG_CASTLE_STRING  = "O-O-O";
     
     
-    private static int[] s_promo = new int[Chess.MAX_PIECE + 1];
+    private static final int[] s_promo = new int[Chess.MAX_PIECE + 1];
     
     static {
-        for (int i=0; i<=Chess.MAX_PIECE; i++)
+        for (int i=0; i<=Chess.MAX_PIECE; i++) {
             s_promo[i] = NO_PROMO;
+        }
         s_promo[Chess.KNIGHT]   = PROMO_KNIGHT;
         s_promo[Chess.BISHOP]   = PROMO_BISHOP;
         s_promo[Chess.ROOK]     = PROMO_ROOK;
