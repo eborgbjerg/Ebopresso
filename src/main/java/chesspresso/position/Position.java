@@ -497,25 +497,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
 
-// unused
-//    
-//    private final long getBitBoard(int piece, int color)
-//    {
-//        long bb;
-//        switch(piece) {
-//            case Chess.NO_PIECE: return 0L;
-//            case Chess.KING:     return ofSquare(color == Chess.WHITE ? m_whiteKing : m_blackKing);
-//            case Chess.PAWN:     bb = m_bbPawns; break;
-//            case Chess.KNIGHT:   bb = m_bbKnights; break;
-//            case Chess.BISHOP:   bb = m_bbBishops & (~m_bbRooks); break;
-//            case Chess.ROOK:     bb = m_bbRooks & (~m_bbBishops); break;
-//            case Chess.QUEEN:    bb = m_bbBishops & m_bbRooks; break;
-//            default:
-//                throw new RuntimeException("Unknown piece: " + piece);
-//        }
-//        if (color == Chess.WHITE) return bb & m_bbWhites; else return bb & m_bbBlacks;
-//    }
-    
+
     //======================================================================
     
     public final void setStone(int sqi, int stone)
