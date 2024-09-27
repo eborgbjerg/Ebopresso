@@ -121,14 +121,17 @@ class PositionTest extends Specification {
         // 2) performance testing data
         expect:
         // https://www.chessprogramming.org/Perft_Results
-//        Perft(Position.createInitialPosition(), 1) == 20
-//        Perft(Position.createInitialPosition(), 2) == 400
-//        Perft(Position.createInitialPosition(), 3) == 8902
-//        Perft(Position.createInitialPosition(), 4) == 197281
-        Perft(Position.createInitialPosition(), 5) == 4865609 // 0.6 sec
+        Perft(Position.createInitialPosition(), 1) == 20
+        Perft(Position.createInitialPosition(), 2) == 400
+        Perft(Position.createInitialPosition(), 3) == 8902
+        Perft(Position.createInitialPosition(), 4) == 197281
+//        Perft(Position.createInitialPosition(), 5) == 4865609 // 0.6 sec
 //        Perft(Position.createInitialPosition(), 6) == 119060324 // 10 sec
     }
 
+    // Perft could be made to run with much less memory consumption
+    // by avoiding the array creations, but that would necessitate
+    // replacing 'm_moves', which is not a vey small change to make.
     static long Perft(Position p, int depth) {
         //  https://www.chessprogramming.org/Perft
         if (depth == 0) {
