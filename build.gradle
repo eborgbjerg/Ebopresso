@@ -13,6 +13,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
+    // byte-buddy could be needed if mocks of non-interfaces are
+    //testImplementation 'net.bytebuddy:byte-buddy:1.12.13'
 }
 
 java {
