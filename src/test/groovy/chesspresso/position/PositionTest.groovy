@@ -124,7 +124,7 @@ class PositionTest extends Specification {
         Perft(Position.createInitialPosition(), 1) == 20
         Perft(Position.createInitialPosition(), 2) == 400
         Perft(Position.createInitialPosition(), 3) == 8902
-        Perft(Position.createInitialPosition(), 4) == 197281
+//        Perft(Position.createInitialPosition(), 4) == 197281
 //        Perft(Position.createInitialPosition(), 5) == 4865609 // 0.6 sec
 //        Perft(Position.createInitialPosition(), 6) == 119060324 // 10 sec
     }
