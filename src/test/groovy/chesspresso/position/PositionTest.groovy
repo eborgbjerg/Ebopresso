@@ -86,7 +86,7 @@ class PositionTest extends Specification {
         when:
         Position p = new Position('4k3/4r3/8/8/8/8/4R3/4K3 w - - 0 1', true)
 
-        then:
+        then: 'query the position'
         p.getPiece(Chess.E1) == Chess.KING
         p.getStone(Chess.E1) == Chess.WHITE_KING
         p.getPiece(Chess.E8) == Chess.KING
@@ -95,11 +95,14 @@ class PositionTest extends Specification {
         p.getStone(Chess.E2) == Chess.WHITE_ROOK
         p.getPiece(Chess.E7) == Chess.ROOK
         p.getStone(Chess.E7) == Chess.BLACK_ROOK
+        p.getFEN() == '4k3/4r3/8/8/8/8/4R3/4K3 w - - 0 1'
+        p.getHalfMoveClock() == 0
+        p.getHashCode() == 5375441042984917594
 
         when:
         def moves = p.getAllMoves()
 
-        then:
+        then: 'query the move list'
         moves.length == 9
         Move.getFromSqi(moves[0]) == Chess.E2
         Move.getToSqi(moves[0]) == Chess.E3
@@ -109,18 +112,21 @@ class PositionTest extends Specification {
         Move.getToSqi(moves[4]) == Chess.E7
     }
 
+    // r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -
+    // kiwipete position
+
     def 'test move generation'() {
         // set depth higher to achieve
         // 1) better coverage
         // 2) performance testing data
         expect:
         // https://www.chessprogramming.org/Perft_Results
-        Perft(Position.createInitialPosition(), 1) == 20
-        Perft(Position.createInitialPosition(), 2) == 400
-        Perft(Position.createInitialPosition(), 3) == 8902
+//        Perft(Position.createInitialPosition(), 1) == 20
+//        Perft(Position.createInitialPosition(), 2) == 400
+//        Perft(Position.createInitialPosition(), 3) == 8902
 //        Perft(Position.createInitialPosition(), 4) == 197281
-//        Perft(Position.createInitialPosition(), 5) == 4865609
-//        Perft(Position.createInitialPosition(), 6) == 119060324
+        Perft(Position.createInitialPosition(), 5) == 4865609 // 0.6 sec
+//        Perft(Position.createInitialPosition(), 6) == 119060324 // 10 sec
     }
 
     static long Perft(Position p, int depth) {
