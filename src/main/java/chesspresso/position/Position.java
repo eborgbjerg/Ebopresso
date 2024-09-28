@@ -23,12 +23,7 @@ import java.text.*;
 
 public final class Position extends AbstractMoveablePosition
 {
-    
-    //======================================================================
-    // Debug flag 
-    
-    private final static boolean DEBUG = false;
-    
+
     //======================================================================
     // Profiling
     
@@ -49,7 +44,7 @@ public final class Position extends AbstractMoveablePosition
     private static long m_numSet = 0;
     private static long m_numGetSquare = 0;
     
-    private static DecimalFormat df = new DecimalFormat("#");
+    private static final DecimalFormat df = new DecimalFormat("#");
     
     private static String format(long num)
     {
@@ -97,32 +92,31 @@ public final class Position extends AbstractMoveablePosition
         for(int sqi=0; sqi<Chess.NUM_OF_SQUARES; sqi++) s_ofSquare[sqi] = 1L << sqi;
     }
     
-    private static final boolean isExactlyOneBitSet(long bb)
+    private static boolean isExactlyOneBitSet(long bb)
     {
         return bb != 0L && (bb & (bb - 1L)) == 0L;
     }
     
-    private static final boolean isMoreThanOneBitSet(long bb)
+    private static boolean isMoreThanOneBitSet(long bb)
     {
         return (bb & (bb - 1L)) != 0L;
     }
     
-    private static final int numOfBitsSet(long bb)
+    private static int numOfBitsSet(long bb)
     {
         int num = 0;
         while (bb != 0L) {bb &= bb - 1; num++;}
-        //        System.out.println(bb + " " + num);
         return num;
     }
     
     //public static final long ofSquare(int sqi) {return 1L << sqi;}
     //public static final long ofCol(int col) {return 0x0101010101010101L << col;}
     //public static final long ofRow(int row) {return 255L << (8*row);}
-    public static final long ofSquare(int sqi) {return s_ofSquare[sqi];}
-    public static final long ofCol(int col) {return s_ofCol[col];}
-    public static final long ofRow(int row) {return s_ofRow[row];}
+    public static long ofSquare(int sqi) {return s_ofSquare[sqi];}
+    public static long ofCol(int col) {return s_ofCol[col];}
+    public static long ofRow(int row) {return s_ofRow[row];}
     
-    private static final int getFirstSqi(long bb)
+    private static int getFirstSqi(long bb)
     {
         // inefficient for bb == 0L, test outside (in while loop condition)
         //        if (bb == 0L) {
@@ -193,8 +187,6 @@ public final class Position extends AbstractMoveablePosition
                     for (int sqi = from + DIR_SHIFT[DIR[from][to]]; sqi != to; sqi += DIR_SHIFT[DIR[from][to]]) {
                         SQUARES_BETWEEN[from][to] |= ofSquare(sqi);
                     }
-                    //System.out.println(Chess.sqiToStr(from) + " " + Chess.sqiToStr(to));
-                    //ChBitBoard.printBoard(SQUARES_BETWEEN[from][to]);
                 }
             }
             RAY[from] = new long[NUM_OF_DIRS];
@@ -351,7 +343,7 @@ public final class Position extends AbstractMoveablePosition
     private short[] m_moveStack;
     private int m_moveStackIndex;
 
-    private short[] m_moves = new short[256];   // buffer for getAllMoves, allocated once for efficiency
+    private final short[] m_moves = new short[256];   // buffer for getAllMoves, allocated once for efficiency
     
     //======================================================================
     
@@ -491,9 +483,7 @@ public final class Position extends AbstractMoveablePosition
     public final void setStone(int sqi, int stone)
     {
         if (PROFILE) m_numSet++;
-        
-        if (DEBUG) System.out.println("Set " + Chess.stoneToChar(stone) + " to " + Chess.sqiToStr(sqi));
-        
+
         int old = getStone(sqi);
         if (old != stone) {
             long bbSqi = ofSquare(sqi);
@@ -535,8 +525,7 @@ public final class Position extends AbstractMoveablePosition
             /*---------- hash value ----------*/
             if (old != Chess.NO_STONE)   m_hashCode ^= s_hashMod[sqi][old   - Chess.MIN_STONE];
             if (stone != Chess.NO_STONE) m_hashCode ^= s_hashMod[sqi][stone - Chess.MIN_STONE];
-            //System.out.println("hash code set: " + m_hashCode);
-            
+
             /*---------- listeners ----------*/
             if (m_notifyListeners && m_listeners != null) fireSquareChanged(sqi);
         }
@@ -544,27 +533,22 @@ public final class Position extends AbstractMoveablePosition
     
     public final void setPlyNumber(int plyNumber)
     {
-//        new Exception("setPlyNumber " + plyNumber).printStackTrace();
-        if (DEBUG) System.out.println("setPlyNumber " + plyNumber);
         long flags = m_flags;
         m_flags &= ~(PLY_NUMBER_MASK << PLY_NUMBER_SHIFT);
         m_flags |= (long)plyNumber << PLY_NUMBER_SHIFT;
         if (m_flags != flags) {
             if (m_notifyListeners && m_listeners != null) firePlyNumberChanged();
         }
-//        if (plyNumber != getPlyNumber()) new Exception("Ply number " + plyNumber).printStackTrace();
     }
     
     private final void incPlyNumber()
     {
-        if (DEBUG) System.out.println("incPlyNumber");
         m_flags += 1L << PLY_NUMBER_SHIFT;
         if (m_notifyListeners && m_listeners != null) firePlyNumberChanged();
     }  
 
     public void setHalfMoveClock(int halfMoveClock)
     {
-        if (DEBUG) System.out.println("setHalfMoveClock " + halfMoveClock);
         long flags = m_flags;
         m_flags &= ~(HALF_MOVE_CLOCK_MASK << HALF_MOVE_CLOCK_SHIFT);
         m_flags |= (long)halfMoveClock << HALF_MOVE_CLOCK_SHIFT;
@@ -575,7 +559,6 @@ public final class Position extends AbstractMoveablePosition
     
     public final void setCastles(int castles)
     {
-        if (DEBUG) System.out.println("setCastles " + castles);
         int oldCastles = getCastles();
         if (oldCastles != castles) {
             m_flags &= ~(CASTLES_MASK << CASTLES_SHIFT);
@@ -583,7 +566,6 @@ public final class Position extends AbstractMoveablePosition
             /*---------- hash value ----------*/
             m_hashCode ^= s_hashCastleMod[oldCastles];
             m_hashCode ^= s_hashCastleMod[castles];
-            //System.out.println("hash code castles: " + m_hashCode);
             /*---------- listeners ----------*/
             if (m_notifyListeners && m_listeners != null) fireCastlesChanged();
         }
@@ -591,7 +573,6 @@ public final class Position extends AbstractMoveablePosition
     
     public void setSqiEP(int sqiEP)
     {
-        if (DEBUG) System.out.println("setSqiEP " + sqiEP);
         if (getSqiEP() != sqiEP) {
             m_flags &= ~(SQI_EP_MASK << SQI_EP_SHIFT);
             m_flags |= (sqiEP - Chess.NO_SQUARE) << SQI_EP_SHIFT;
@@ -619,8 +600,7 @@ public final class Position extends AbstractMoveablePosition
             m_flags &= ~(HASH_COL_EP_MASK << HASH_COL_EP_SHIFT);
             // encode column of ep square in hash code (NO_SQUARE if no ep)
             m_flags |= (hashColEP - Chess.NO_SQUARE) << HASH_COL_EP_SHIFT;
-            //System.out.println("hash code ep: " + m_hashCode);
-            
+
             /*---------- listeners ----------*/
             if (m_notifyListeners && m_listeners != null) fireSqiEPChanged();
         }
@@ -628,7 +608,6 @@ public final class Position extends AbstractMoveablePosition
     
     public final void setToPlay(int toPlay)
     {
-        if (DEBUG) System.out.println("setToPlay " + toPlay);
         if (toPlay != getToPlay()) {
             toggleToPlay();
         }
@@ -636,7 +615,6 @@ public final class Position extends AbstractMoveablePosition
     
     public final void toggleToPlay()
     {
-        if (DEBUG) System.out.println("toggleToPlay");
         m_flags ^= (TO_PLAY_MASK);
         /*---------- hash value ----------*/
         m_hashCode ^= HASH_TOPLAY_MULT;
@@ -705,9 +683,9 @@ public final class Position extends AbstractMoveablePosition
             squaresChanged |= bbFromTo;
             
             if (Move.isCapturing(move)) {
-                if (DEBUG) if (isSquareEmpty(sqiTo) && !(getSqiEP() == sqiTo)) throw new RuntimeException("Capture square is empty " + Integer.toBinaryString(move) + " " + Move.getString(move));
-                if (DEBUG) if (getColor(sqiTo) == getToPlay()) throw new RuntimeException("Cannot capture own piece " + Integer.toBinaryString(move) + " " + Move.getString(move));
-                if (DEBUG) if (getPiece(sqiTo) == Chess.KING) throw new RuntimeException("Cannot capture the king" + Integer.toBinaryString(move) + " " + Move.getString(move));
+                if (isSquareEmpty(sqiTo) && !(getSqiEP() == sqiTo)) throw new RuntimeException("Capture square is empty " + Integer.toBinaryString(move) + " " + Move.getString(move));
+                if (getColor(sqiTo) == getToPlay()) throw new RuntimeException("Cannot capture own piece " + Integer.toBinaryString(move) + " " + Move.getString(move));
+                if (getPiece(sqiTo) == Chess.KING) throw new RuntimeException("Cannot capture the king" + Integer.toBinaryString(move) + " " + Move.getString(move));
                 
                 long notBBTo;
                 if (Move.isEPMove(move)) {
@@ -717,7 +695,6 @@ public final class Position extends AbstractMoveablePosition
                     m_hashCode ^= s_hashMod[pawnSqi][(getToPlay() == Chess.WHITE ? Chess.BLACK_PAWN : Chess.WHITE_PAWN) - Chess.MIN_STONE];
                 } else {
                     notBBTo = ~bbTo;
-//                    int capturedStone = Chess.pieceToStone(ChMove.getCapturedPiece(move), getNotToPlay());
                     int capturedStone = getStone(Move.getToSqi(move));
                     m_hashCode ^= s_hashMod[sqiTo][capturedStone - Chess.MIN_STONE];
                 }
@@ -725,12 +702,9 @@ public final class Position extends AbstractMoveablePosition
                 //TODO:  remove all bits -> faster than switching?
                 m_bbWhites &= notBBTo; m_bbBlacks &= notBBTo;
                 m_bbPawns  &= notBBTo; m_bbKnights &= notBBTo; m_bbBishops &= notBBTo; m_bbRooks &= notBBTo;
-                //                this.printBoard(m_bbWhites);this.printBoard(m_bbBlacks);this.printBoard(m_bbPawns);
                 increaseHalfMoveClock = false;
             }
             if (Move.isPromotion(move)) {
-//                System.out.println("PROMOTION");
-//                System.out.println(move + " " + ChMove.getBinaryString(move) + " " + ChMove.getString(move));
                 int promotionStone = Chess.pieceToStone(Move.getPromotionPiece(move), getToPlay());
                 if (getToPlay() == Chess.WHITE) {
                     m_bbWhites ^= bbFromTo; m_bbPawns ^= bbFrom;
@@ -829,7 +803,6 @@ public final class Position extends AbstractMoveablePosition
             short[] newMoveStack = new short[m_moveStack.length * 2];
             System.arraycopy(m_moveStack, 0, newMoveStack, 0, m_moveStack.length);
             m_moveStack = newMoveStack;
-//            if (index >= m_moveStack.length) System.out.println("Too big");
         }
     }
     
@@ -839,7 +812,6 @@ public final class Position extends AbstractMoveablePosition
             long[] oldBak = m_bakStack;
             m_bakStack = new long[2 * oldBak.length];
             System.arraycopy(oldBak, 0, m_bakStack, 0, oldBak.length);
-//            System.out.println(m_bakIndex + " " + m_bakStack.length);
         }
     }
     
@@ -919,8 +891,6 @@ public final class Position extends AbstractMoveablePosition
         m_notifyPositionChanged = notify;
         
         if (PROFILE) m_numLongsBackuped += numOfBitsSet(changeMask) + 2;
-        
-        if (DEBUG) System.out.println("I did a move " + Move.getString(move));
     }
     
     public boolean canUndoMove()
@@ -966,9 +936,7 @@ public final class Position extends AbstractMoveablePosition
             m_bbBlacks = ((1L << m_blackKing) | m_bbPawns | m_bbKnights | m_bbBishops | m_bbRooks) & (~m_bbWhites);
             
             m_moveStackIndex--;
-            
-            if (DEBUG) System.out.println("I undid the last move");
-            
+
             //---------- notify listeners ----------
             if (m_notifyListeners) {
                 if (m_listeners != null) {
@@ -1039,9 +1007,7 @@ public final class Position extends AbstractMoveablePosition
             m_bbBlacks = ((1L << m_blackKing) | m_bbPawns | m_bbKnights | m_bbBishops | m_bbRooks) & (~m_bbWhites);
             
             m_moveStackIndex++;
-            
-            if (DEBUG) System.out.println("I redid the last move");
-            
+
             /*---------- notify listeners ----------*/
             if (m_notifyListeners) {
                 if (m_listeners != null) {
@@ -1097,7 +1063,6 @@ public final class Position extends AbstractMoveablePosition
         
         if (super.getHashCode() != getHashCode()) {
             System.out.println("Wrong hash code " + getHashCode() + " should be " + super.getHashCode());
-//            ChBitBoard.printBoard(getHashCode()); System.out.println(); ChBitBoard.printBoard(super.getHashCode()); 
             long diff = getHashCode() - super.getHashCode();
             System.out.println("Difference " + diff);
             for (int i=0; i<Chess.NUM_OF_SQUARES; i++) {
@@ -1214,10 +1179,8 @@ public final class Position extends AbstractMoveablePosition
         
         while (bb != 0L) {
             int from = getFirstSqi(bb);
-            if (DEBUG) System.out.print("  trying from: " + from);
             int pinnedDir = getPinnedDirection(from, getToPlay());
             if (attacks(from, to) && (pinnedDir == NO_DIR || areDirectionsParallel(pinnedDir, DIR[from][to]))) {
-                if (DEBUG) System.out.println(" ok");
                 return from;
             }
             bb &= bb -1;
@@ -1234,7 +1197,6 @@ public final class Position extends AbstractMoveablePosition
      */
     public short getPawnMove(int colFrom, int to, int promoPiece)
     {
-//        if (getColor(from) != getToPlay()) throw new ChIllegalMoveException("Wrong color");
         if (to == getSqiEP()) {
             int from = Chess.coorToSqi(colFrom, getToPlay() == Chess.WHITE ? 4 : 3);
             return Move.getEPMove(from, to);
@@ -1337,7 +1299,6 @@ public final class Position extends AbstractMoveablePosition
         long bbAllPieces = m_bbWhites | m_bbBlacks;
         if ((SQUARES_BETWEEN[kingSqi][sqi] & bbAllPieces) != 0L) return NO_DIR;  // =====>
         
-        //        System.out.println("now cheching behind sqi");
         long bb = bbSqi;
         int vector = DIR_SHIFT[kingDir];
         do{
@@ -1350,7 +1311,7 @@ public final class Position extends AbstractMoveablePosition
         return NO_DIR;
     }
     
-    private static final int sign(int i)
+    private static int sign(int i)
     {
         if (i<0) {return -1;} else if (i>0) {return 1;} else {return 0;}
     }
@@ -1406,7 +1367,6 @@ public final class Position extends AbstractMoveablePosition
         long bbTargets = ((BISHOP_ATTACKS[sqi] & m_bbBishops) | (ROOK_ATTACKS[sqi] & m_bbRooks)) & bbAttackerPieces;
         while (bbTargets != 0L) {
             int from = getFirstSqi(bbTargets);
-            //            if (SQUARES_BETWEEN[from][sqi] == 0L) System.out.println("SQB is 0");
             if ((SQUARES_BETWEEN[from][sqi] & bbAllPieces) == 0L) return true;  // =====>
             bbTargets &= bbTargets -1;
         }
@@ -1894,7 +1854,6 @@ public final class Position extends AbstractMoveablePosition
         value += 325 * (numOfBitsSet(m_bbBishops & (~m_bbRooks) & m_bbWhites) - numOfBitsSet(m_bbBishops & (~m_bbRooks) & m_bbBlacks));
         value += 500 * (numOfBitsSet(m_bbRooks & (~m_bbBishops) & m_bbWhites) - numOfBitsSet(m_bbRooks & (~m_bbBishops) & m_bbBlacks));
         value += 900 * (numOfBitsSet(m_bbRooks & m_bbBishops & m_bbWhites) - numOfBitsSet(m_bbRooks & m_bbBishops & m_bbBlacks));
-        //        System.out.println(value);
         return (getToPlay() == Chess.WHITE ? value : -value);
     }
     
