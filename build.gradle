@@ -32,8 +32,10 @@ test {
 }
 
 pitest {
-    targetClasses = ['chesspresso.position.FEN']  //by default "${project.group}.*"
-    targetTests = ['chesspresso.position.FenTest']
+    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
+    targetTests = ['chesspresso.*']
+//    targetClasses = ['chesspresso.position.FEN']  //by default "${project.group}.*"
+//    targetTests = ['chesspresso.position.FenTest']
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '1.0.0'
 }

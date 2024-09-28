@@ -160,7 +160,6 @@ public class FEN
         try {
             pos.validate();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException("Malformatted fen string: " + e.getMessage());
         }
         
