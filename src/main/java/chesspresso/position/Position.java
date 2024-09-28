@@ -60,10 +60,7 @@ public final class Position extends AbstractMoveablePosition
     public static void printProfile()
     {
         if (!PROFILE) return;  // =====>
-        
-        //        NumberFormat nf = NumberFormat.getNumberInstance();
-        //        nf.form
-        
+
         System.out.println("Instances created:");
         System.out.println("  ChPosition:         " + format(m_numPositions));
         System.out.println("Methods called:");
@@ -142,20 +139,8 @@ public final class Position extends AbstractMoveablePosition
         return sqi;
         //        }
     }
-    
-    public static final long getFirstSqiBB(long bb)  // returns 0 if no bit set, not -1!!!
-    {
-        return bb & -bb;
-    }
-    
-    private static final String toString(long bb)
-    {
-        String ZEROS = "0000000000000000000000000000000000000000000000000000000000000000";
-        String s = ZEROS + Long.toBinaryString(bb);
-        return s.substring(s.length() - 64);
-    }
-    
-    private static final void printBoard(long bb)
+
+    private static void printBoard(long bb)
     {
         for (int row = Chess.NUM_OF_ROWS - 1; row >= 0; row--) {
             for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
@@ -225,14 +210,14 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    private static final boolean isDiagonal(int dir) {return dir != NO_DIR && (dir & 1) == 0;}
+    private static boolean isDiagonal(int dir) {return dir != NO_DIR && (dir & 1) == 0;}
     
-    private static final boolean areDirectionsParallel(int dir1, int dir2)
+    private static boolean areDirectionsParallel(int dir1, int dir2)
     {
         return dir1 != NO_DIR && dir2 != NO_DIR && (dir1 & 3) == (dir2 & 3);
     }
     
-    private static final int getDir(int from, int to)
+    private static int getDir(int from, int to)
     {
         // used to generate DIR[from][to]
         
@@ -334,14 +319,12 @@ public final class Position extends AbstractMoveablePosition
     
     //======================================================================
     // settings for information flags in m_flags
-    
+
+    private final static int FLAG_YES              =   1;
+    private final static int FLAG_NO               =   2;
+    private final static int FLAG_MASK             = 0x3;
     private final static int
-        FLAG_UNKNOWN          =   0,
-        FLAG_YES              =   1,
-        FLAG_NO               =   2,
-        FLAG_MASK             = 0x3;
-    private final static int
-        TO_PLAY_SHIFT         =  0,   TO_PLAY_MASK          = 0x01,
+        TO_PLAY_MASK          = 0x01,
         CASTLES_SHIFT         =  1,   CASTLES_MASK          = 0x0F,
         SQI_EP_SHIFT          =  5,   SQI_EP_MASK           = 0x7F,
         HASH_COL_EP_SHIFT     = 12,   HASH_COL_EP_MASK      = 0x0F,
@@ -418,8 +401,8 @@ public final class Position extends AbstractMoveablePosition
     
     //======================================================================
     
-    public final int getToPlay()                {return      ((m_flags >> TO_PLAY_SHIFT) & TO_PLAY_MASK) == 0 ? Chess.WHITE : Chess.BLACK;}
-    private final int getNotToPlay()            {return      ((m_flags >> TO_PLAY_SHIFT) & TO_PLAY_MASK) != 0 ? Chess.WHITE : Chess.BLACK;}
+    public final int getToPlay()                {return      ((m_flags) & TO_PLAY_MASK) == 0 ? Chess.WHITE : Chess.BLACK;}
+    private final int getNotToPlay()            {return      ((m_flags) & TO_PLAY_MASK) != 0 ? Chess.WHITE : Chess.BLACK;}
     public final boolean isSquareEmpty(int sqi) {return      ((m_bbWhites | m_bbBlacks) & ofSquare(sqi)) == 0L;}
     public final int getCastles()               {return (int) (m_flags >> CASTLES_SHIFT) & CASTLES_MASK;}
     public final int getSqiEP()                 {return (int)((m_flags >> SQI_EP_SHIFT) & SQI_EP_MASK) + Chess.NO_SQUARE;}
@@ -465,7 +448,12 @@ public final class Position extends AbstractMoveablePosition
         if (sqi == m_whiteKing || sqi == m_blackKing) return Chess.KING;
         return Chess.NO_PIECE;
     }
-    
+
+    /**
+     * Get the color of the stone sitting on a given square, if any
+     * @param sqi the square
+     * @return WHITE, BLACK or NOBODY
+     */
     public final int getColor(int sqi)
     {
         if (PROFILE) m_numGetSquare++; // TODO
@@ -569,20 +557,11 @@ public final class Position extends AbstractMoveablePosition
     
     private final void incPlyNumber()
     {
-//        System.out.println("incPlyNumber");
         if (DEBUG) System.out.println("incPlyNumber");
         m_flags += 1L << PLY_NUMBER_SHIFT;
         if (m_notifyListeners && m_listeners != null) firePlyNumberChanged();
     }  
-    
-//    private final void decPlyNumber()
-//    {
-////        System.out.println("decPlyNumber");
-//        if (DEBUG) System.out.println("decPlyNumber");
-//        m_flags -= 1L << PLY_NUMBER_SHIFT;
-//        if (m_notifyListeners && m_listeners != null) firePlyNumberChanged();
-//    }  
-    
+
     public void setHalfMoveClock(int halfMoveClock)
     {
         if (DEBUG) System.out.println("setHalfMoveClock " + halfMoveClock);
@@ -625,10 +604,6 @@ public final class Position extends AbstractMoveablePosition
             // ignore ep square for hashing if there is no opponent pawn to actually capture the pawn ep
             // only in this case is the position different
             
-//            if (sqiEP < 0 || sqiEP > 63) {
-//                System.out.println(sqiEP);
-//            }
-            
             if (sqiEP != Chess.NO_COL) {
                 if (sqiEP < Chess.A4) {   // test is independent of whether toplay is set before or afterwards
                     if ((WHITE_PAWN_ATTACKS[sqiEP] & m_bbPawns & m_bbBlacks) == 0L) {
@@ -662,10 +637,9 @@ public final class Position extends AbstractMoveablePosition
     public final void toggleToPlay()
     {
         if (DEBUG) System.out.println("toggleToPlay");
-        m_flags ^= (TO_PLAY_MASK << TO_PLAY_SHIFT);
+        m_flags ^= (TO_PLAY_MASK);
         /*---------- hash value ----------*/
         m_hashCode ^= HASH_TOPLAY_MULT;
-        //System.out.println("hash code toPlay: " + m_hashCode);
         /*---------- listeners ----------*/
         if (m_notifyListeners && m_listeners != null) fireToPlayChanged();
     }
@@ -1816,15 +1790,12 @@ public final class Position extends AbstractMoveablePosition
             long attackers = getDirectAttackers((getToPlay() == Chess.WHITE ? m_whiteKing : m_blackKing), getNotToPlay(), false);
             //ChBitBoard.printBoard(attackers);
             if (isExactlyOneBitSet(attackers)) {
-                //                System.out.println("investigate piece moves");
                 attackers = getDirectAttackers((getToPlay() == Chess.WHITE ? m_whiteKing : m_blackKing), getNotToPlay(), true);
                 bbTargets &= attackers; bbPawnTargets &= attackers;
                 moveIndex = getAllKnightMoves(moveIndex, bbTargets);
                 moveIndex = getAllSlidingMoves(moveIndex, bbTargets, m_bbBishops & (~m_bbRooks) & bbToPlay, Chess.BISHOP);
                 moveIndex = getAllSlidingMoves(moveIndex, bbTargets, m_bbRooks & (~m_bbBishops) & bbToPlay, Chess.ROOK);
                 moveIndex = getAllSlidingMoves(moveIndex, bbTargets, m_bbRooks & m_bbBishops & bbToPlay, Chess.QUEEN);
-                //                moveIndex = getAllSlidingMoves(moveIndex, bbTargets, m_bbBishops & bbToPlay, SW);
-                //                moveIndex = getAllSlidingMoves(moveIndex, bbTargets, m_bbRooks & bbToPlay, S);
                 moveIndex = getAllPawnMoves(moveIndex, bbPawnTargets);
             } else { // double check
                 //printBoard(attackers);

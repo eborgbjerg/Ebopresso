@@ -642,7 +642,7 @@ public class Game implements PositionChangeListener
      * (first the lines, then the main line). This method is used by {@link PGN}.
      *
      *@param listener the listener to receive event when arriving at nodes
-     *@param withLines whether or not to include lines of the current main line.
+     *@param withLines whether to include lines of the current main line.
      */
     public void traverse(GameListener listener, boolean withLines)
     {
