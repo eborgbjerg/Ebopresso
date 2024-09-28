@@ -32,10 +32,10 @@ test {
 }
 
 pitest {
-//    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
-//    targetTests = ['chesspresso.*']
-    targetClasses = ['chesspresso.position.*']  //by default "${project.group}.*"
-    targetTests = ['chesspresso.position.*']
+    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
+    targetTests = ['chesspresso.*']
+//    targetClasses = ['chesspresso.position.*']  //by default "${project.group}.*"
+//    targetTests = ['chesspresso.position.*']
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '1.0.0'
 }

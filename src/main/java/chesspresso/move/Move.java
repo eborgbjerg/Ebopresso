@@ -91,16 +91,15 @@ public class Move
     public  final static int SPECIAL_MOVE             = 0x00000000;  // allow defining of own specials
     public  final static int NUM_OF_SPECIAL_MOVES     = 0x00001000;
     
-    private final static int FROM_SHIFT               =  0;
     private final static int TO_SHIFT                 =  6;
     private final static int PROMOTION_SHIFT          = 12;
 
     // precalculated castles moves
     public static final short
-        WHITE_SHORT_CASTLE    = CASTLE_MOVE | (Chess.E1 << FROM_SHIFT) | (Chess.G1 << TO_SHIFT),
-        WHITE_LONG_CASTLE     = CASTLE_MOVE | (Chess.E1 << FROM_SHIFT) | (Chess.C1 << TO_SHIFT),
-        BLACK_SHORT_CASTLE    = CASTLE_MOVE | (Chess.E8 << FROM_SHIFT) | (Chess.G8 << TO_SHIFT),
-        BLACK_LONG_CASTLE     = CASTLE_MOVE | (Chess.E8 << FROM_SHIFT) | (Chess.C8 << TO_SHIFT);
+        WHITE_SHORT_CASTLE    = CASTLE_MOVE | (Chess.E1) | (Chess.G1 << TO_SHIFT),
+        WHITE_LONG_CASTLE     = CASTLE_MOVE | (Chess.E1) | (Chess.C1 << TO_SHIFT),
+        BLACK_SHORT_CASTLE    = CASTLE_MOVE | (Chess.E8) | (Chess.G8 << TO_SHIFT),
+        BLACK_LONG_CASTLE     = CASTLE_MOVE | (Chess.E8) | (Chess.C8 << TO_SHIFT);
     
     /**
      * Represents "no move". Set to 0 to allow rapid initialization of arrays
@@ -155,9 +154,9 @@ public class Move
     public static short getRegularMove(int fromSqi, int toSqi, boolean capturing)
     {
         if (capturing) {
-            return (short) (CAPTURING_MOVE | (fromSqi << FROM_SHIFT) | (toSqi << TO_SHIFT) | NO_PROMO);
+            return (short) (CAPTURING_MOVE | (fromSqi) | (toSqi << TO_SHIFT) | NO_PROMO);
         } else {
-            return (short) (REGULAR_MOVE | (fromSqi << FROM_SHIFT) | (toSqi << TO_SHIFT) | NO_PROMO);
+            return (short) (REGULAR_MOVE | (fromSqi) | (toSqi << TO_SHIFT) | NO_PROMO);
         }
     }
 
@@ -172,9 +171,9 @@ public class Move
     public static short getPawnMove(int fromSqi, int toSqi, boolean capturing, int promotionPiece)
     {
         if (capturing) {
-            return (short) (CAPTURING_MOVE | (fromSqi << FROM_SHIFT) | (toSqi << TO_SHIFT) | s_promo[promotionPiece]);
+            return (short) (CAPTURING_MOVE | (fromSqi) | (toSqi << TO_SHIFT) | s_promo[promotionPiece]);
         } else {
-            return (short) (REGULAR_MOVE | (fromSqi << FROM_SHIFT) | (toSqi << TO_SHIFT) | s_promo[promotionPiece]);
+            return (short) (REGULAR_MOVE | (fromSqi) | (toSqi << TO_SHIFT) | s_promo[promotionPiece]);
         }
     }
 
@@ -186,7 +185,7 @@ public class Move
      */
     public static short getEPMove(int fromSqi, int toSqi)
     {
-        return (short) (CAPTURING_MOVE | (fromSqi << FROM_SHIFT) | (toSqi << TO_SHIFT) | EP_MOVE);
+        return (short) (CAPTURING_MOVE | (fromSqi) | (toSqi << TO_SHIFT) | EP_MOVE);
     }
 
     /**
@@ -211,7 +210,7 @@ public class Move
 
     /*================================================================================*/
 
-    public static int getFromSqi(short move) {return (move >> FROM_SHIFT) & 0x3F;}
+    public static int getFromSqi(short move) {return (move) & 0x3F;}
     public static int getToSqi(short move) {return (move >> TO_SHIFT)   & 0x3F;}
     
     public static boolean isCapturing(short move) {return (move & TYPE_MASK) == CAPTURING_MOVE;}
@@ -335,8 +334,8 @@ public class Move
     private static final int MOVING_MUL      = 0x00010000;
     private static final int MOVING_MASK     = 0x00070000;
     
-    private short m_move;   
-    private int m_info;
+    private final short m_move;
+    private final int m_info;
 
     /*================================================================================*/
     
