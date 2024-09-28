@@ -24,11 +24,16 @@ import chesspresso.*;
  *
  * @author  Bernhard Seybold
  * @version $Revision: 1.1 $
+ *
+ * @author  Ejner Borgbjerg
+ * @deprecated This class has probably never been verified, indeed it seems it does not work.
  */
+@Deprecated
 public class CompactPosition extends AbstractPosition
 {
 
     private final static int
+            // todo SQI_EP_SHIFT = 5 elsewhere...
         SQI_EP_SHIFT          =  0,   SQI_EP_MASK           = 0x07F,  // [0, 128[
         CASTLES_SHIFT         =  7,   CASTLES_MASK          = 0x00F,  // [0, 15]
         TO_PLAY_SHIFT         = 11,   TO_PLAY_MASK          = 0x001,  // [0 | 1]
@@ -37,14 +42,14 @@ public class CompactPosition extends AbstractPosition
     
     /*================================================================================*/
     
-    private int[] m_stones;   // 32 bytes
-    private int m_flags;      //  4 bytes
+    private final int[] m_stones;   // 32 bytes
+    private final int m_flags;      //  4 bytes
     
     /*================================================================================*/
     
     public CompactPosition()
     {
-        // TODO
+        this(Position.createInitialPosition());
     }
     
     public CompactPosition(ImmutablePosition position)

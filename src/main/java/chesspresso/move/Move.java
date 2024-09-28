@@ -231,7 +231,7 @@ public class Move
 
     public static String getBinaryString(short move)
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=15; i>=0; i--) {
             if ((move & (1 << i)) != 0) sb.append("1"); else sb.append("0");
         }
@@ -252,7 +252,7 @@ public class Move
         else if (isShortCastle(move))      return SHORT_CASTLE_STRING;
         else if (isLongCastle(move))       return LONG_CASTLE_STRING;
         else {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(Chess.sqiToStr(getFromSqi(move)));
             sb.append(isCapturing(move) ? 'x' : '-');
             sb.append(Chess.sqiToStr(getToSqi(move)));
@@ -409,7 +409,7 @@ public class Move
         if (!isValid()) {
             return "<illegal move>";
         } else {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if (isShortCastle()) {
                 sb.append(SHORT_CASTLE_STRING);
             } else if (isLongCastle()) {
@@ -443,7 +443,7 @@ public class Move
         if (!isValid()) {
             return "<illegal move>";
         } else {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if (isShortCastle()) {
                 sb.append(SHORT_CASTLE_STRING);
             } else if (isLongCastle()) {

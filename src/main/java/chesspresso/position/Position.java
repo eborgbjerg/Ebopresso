@@ -1817,7 +1817,7 @@ public final class Position extends AbstractMoveablePosition
     
     public String getMovesAsString(short[] moves, boolean validateEachMove)
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Move.normalizeOrder(moves);
         
         sb.append('{');
@@ -1831,12 +1831,12 @@ public final class Position extends AbstractMoveablePosition
                     try {
                         validate();
                     } catch (Throwable t) {
-                        sb.append("EXCEPTION: after move " + Move.getString(moves[i]) + ": " + t.getMessage());
+                        sb.append("EXCEPTION: after move ").append(Move.getString(moves[i])).append(": ").append(t.getMessage());
                     }
                 }
                 undoMove();
             } catch (IllegalMoveException ex) {
-                sb.append("Illegal Move " + Move.getString(moves[i]) + ": " + ex.getMessage());
+                sb.append("Illegal Move ").append(Move.getString(moves[i])).append(": ").append(ex.getMessage());
             }
         }
         sb.append('}');

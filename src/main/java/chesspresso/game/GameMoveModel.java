@@ -214,7 +214,7 @@ public class GameMoveModel
         
         if (m_moves[index + 1] == COMMENT_START) {
             index += 2;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while (m_moves[index] != COMMENT_END) {
                 sb.append((char)m_moves[index]);
                 index++;

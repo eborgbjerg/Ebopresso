@@ -167,7 +167,7 @@ public class FEN
     
     public static String getFEN(ImmutablePosition pos)
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         
         /*========== 1st field : pieces ==========*/
         int row = 7, col = 0;

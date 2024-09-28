@@ -246,7 +246,7 @@ public class Game implements PositionChangeListener
      */
     public String getLongInfoString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(getWhite()).append(" - ").append(getBlack()).append(", ").append(getEvent());
         if (getRound() != null) {
             sb.append(" (").append(getRound()).append(") ");
@@ -269,7 +269,7 @@ public class Game implements PositionChangeListener
     public String getHeaderString(int line)
     {
         if (line == 0) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(getWhite());
             if (getWhiteElo() != 0) sb.append(" [").append(getWhiteElo()).append("]");
             sb.append(" - ").append(getBlack());
@@ -277,10 +277,8 @@ public class Game implements PositionChangeListener
             sb.append("  ").append(getResultStr()).append("  (").append(getNumOfMoves()).append(")");
             return sb.toString();
         } else if (line == 1) {
-            StringBuffer sb = new StringBuffer();
-            sb.append(getEvent()).append(", ").append(getSite()).append(", ").append(getDate());
-            sb.append("  [").append(getRound()).append("]");
-            return sb.toString();
+            return getEvent() + ", " + getSite() + ", " + getDate() +
+                    "  [" + getRound() + "]";
         } else if (line == 2) {
             return getECO();
         } else {

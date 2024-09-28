@@ -157,7 +157,7 @@ public abstract class Chess
      */
     public static String sqiToStr(int sqi)
     {
-        return new StringBuffer().append(colToChar(sqiToCol(sqi))).append(rowToChar(sqiToRow(sqi))).toString();
+        return String.valueOf(colToChar(sqiToCol(sqi))) + rowToChar(sqiToRow(sqi));
     }
 
     /**

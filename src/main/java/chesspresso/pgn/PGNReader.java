@@ -65,19 +65,17 @@ public final class PGNReader extends PGN
     }
 
     //======================================================================
-    
-    private static final boolean DEBUG = false;
-    
-	private static final int INPUT_BUFFER_SIZE = 16 * 65536;
+
+    private static final int INPUT_BUFFER_SIZE = 16 * 65536;
     private static final int MAX_TOKEN_SIZE    =  8192;
     
-    private static boolean[] s_isToken;
+    private static final boolean[] s_isToken;
 
     static {
         s_isToken = new boolean[128];
-        for(int i = 0; i < s_isToken.length; i++) s_isToken[i] = false;
+        for (int i = 0; i < s_isToken.length; i++) s_isToken[i] = false;
 
-        for(int i = 0; i <= 32; i++) s_isToken[i] = true;
+        for (int i = 0; i <= 32; i++) s_isToken[i] = true;
 
         s_isToken[TOK_ASTERISK]      = true;
         s_isToken[TOK_COMMENT_BEGIN] = true;
@@ -487,8 +485,6 @@ public final class PGNReader extends PGN
 
     private short getLastTokenAsMove() throws PGNSyntaxError
     {
-        if (DEBUG) System.out.println("getLastTokenAsMove " + getLastTokenAsString());
-        
         if (!isLastTokenIdent()) syntaxError("Move expected");
         
         int next = 0;
@@ -499,8 +495,6 @@ public final class PGNReader extends PGN
             last--;
         }
         
-//        String s = getLastTokenAsString();
-//        if (DEBUG) System.out.println("moveStr= " + s);
         short move = Move.ILLEGAL_MOVE;
         if (m_buf[0] == 'O' && m_buf[1] == '-' && m_buf[2] == 'O') {
             if (m_lastTokenLength >= 5 && m_buf[3] == '-' && m_buf[4] == 'O') {
@@ -571,7 +565,6 @@ public final class PGNReader extends PGN
                 move = m_curGame.getPosition().getPieceMove(piece, col, row, toSqi);
             }
         }
-        if (DEBUG) System.out.println("  -> " + Move.getString(move));
         return move;
     }
 
@@ -598,7 +591,7 @@ public final class PGNReader extends PGN
             }
             getNextToken();
         } else if(getLastToken() == '!' || getLastToken() == '?') {
-            StringBuffer nagSB = new StringBuffer();
+            StringBuilder nagSB = new StringBuilder();
             do {
                 nagSB.append((char)getLastToken());
                 getNextToken();
@@ -708,7 +701,6 @@ public final class PGNReader extends PGN
      */
     public GameModel parseGame() throws PGNSyntaxError, IOException
     {
-        if (DEBUG) System.out.println("===> new game");
         if(m_in == null) return null;
 //1.4        if(m_in == null && m_charBuf == null) return null;
         try {
@@ -755,7 +747,6 @@ public final class PGNReader extends PGN
 
     public static void main(String[] args)
     {
-        int NO_MODE = -1;
         int SHOW_CHARS = 0;
         int SHOW_TOKENS = 1;
         int PARSE_DIRECTLY = 2;
