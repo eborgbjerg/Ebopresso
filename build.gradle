@@ -32,10 +32,14 @@ test {
 }
 
 pitest {
-    targetClasses = ['chesspresso.position.*', 'chesspresso.move.*']  //by default "${project.group}.*"
+    //timeoutConstInMillis = 300
+    timeoutFactor = 1.7
+//    targetClasses = ['chesspresso.position.CompactPosition']  //by default "${project.group}.*"
+//    targetTests = ['chesspresso.position.CompactPositionTest']
+//    targetClasses = ['chesspresso.position.*', 'chesspresso.move.*']  //by default "${project.group}.*"
+//    targetTests = ['chesspresso.*']
+    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
     targetTests = ['chesspresso.*']
-//    targetClasses = ['chesspresso.position.*']  //by default "${project.group}.*"
-//    targetTests = ['chesspresso.position.*']
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '1.0.0'
 }

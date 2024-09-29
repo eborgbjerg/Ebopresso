@@ -287,6 +287,7 @@ class PositionTest extends Specification {
         Move.getToSqi(moves[0]) == Chess.H1
         p.getMove(Chess.G1,Chess.H1,Chess.NO_PIECE) == moves[0]
         !p.isSquarePossibleEPSquare(Chess.H1)
+        AbstractPosition.isWhiteToPlay(p.hashCode)
 
         when:
         def m = new Move(moves[0] as short,Chess.KING,6,0,false,false,false)
@@ -294,6 +295,7 @@ class PositionTest extends Specification {
 
         then:
         p.FEN == 'r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1R1K b kq - 1 1'
+        !AbstractPosition.isWhiteToPlay(p.hashCode)
     }
 
     def 'test move generation'() {

@@ -174,15 +174,11 @@ public abstract class AbstractPosition implements ImmutablePosition
     {
         return (obj instanceof ImmutablePosition) && (((ImmutablePosition)obj).getHashCode() == getHashCode());
     }
-    
-    /*================================================================================*/
 
     public String getFEN()
     {
         return FEN.getFEN(this);
     }
-    
-    /*================================================================================*/
 
     public boolean isCastlePossible(int castle)
     {
@@ -262,9 +258,7 @@ public abstract class AbstractPosition implements ImmutablePosition
             throw new RuntimeException("Illegal to play: " + getToPlay());
         }
     }
-    
-    /*================================================================================*/
-    
+
     public String toString() {return FEN.getFEN(this);}
     
 }

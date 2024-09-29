@@ -39,14 +39,10 @@ public class CompactPosition extends AbstractPosition
         TO_PLAY_SHIFT         = 11,   TO_PLAY_MASK          = 0x001,  // [0 | 1]
         PLY_NUMBER_SHIFT      = 12,   PLY_NUMBER_MASK       = 0x3FF,  // [0, 1024[
         HALF_MOVE_CLOCK_SHIFT = 22,   HALF_MOVE_CLOCK_MASK  = 0xFF;   // [0, 128[
-    
-    /*================================================================================*/
-    
+
     private final int[] m_stones;   // 32 bytes
     private final int m_flags;      //  4 bytes
-    
-    /*================================================================================*/
-    
+
     public CompactPosition()
     {
         this(Position.createInitialPosition());
