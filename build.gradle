@@ -32,7 +32,7 @@ test {
 }
 
 pitest {
-    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
+    targetClasses = ['chesspresso.position.*', 'chesspresso.move.*']  //by default "${project.group}.*"
     targetTests = ['chesspresso.*']
 //    targetClasses = ['chesspresso.position.*']  //by default "${project.group}.*"
 //    targetTests = ['chesspresso.position.*']

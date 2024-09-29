@@ -275,6 +275,27 @@ class PositionTest extends Specification {
         p.getMovesAsString(p.allMoves, true) == '{Rxf5+,Ka3,Ka5,Ra5,Rc5,Rd5,Re5,e5,g5,Rb6,e6,g6+,Rb7,Rb8}'
     }
 
+    def 'position 4'() {
+        when:
+        Position p = new Position('r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1', true)
+        short[] moves = p.allMoves
+
+        then:
+        p.legal
+        moves.length == 6
+        Move.getFromSqi(moves[0]) == Chess.G1
+        Move.getToSqi(moves[0]) == Chess.H1
+        p.getMove(Chess.G1,Chess.H1,Chess.NO_PIECE) == moves[0]
+        !p.isSquarePossibleEPSquare(Chess.H1)
+
+        when:
+        def m = new Move(moves[0] as short,Chess.KING,6,0,false,false,false)
+        p.doMove(m)
+
+        then:
+        p.FEN == 'r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1R1K b kq - 1 1'
+    }
+
     def 'test move generation'() {
         // https://www.chessprogramming.org/Perft_Results
         // set depth higher to achieve
@@ -327,6 +348,7 @@ class PositionTest extends Specification {
     }
 
     // todo
+    //  doMove(Move)
     //  maybe centralize FEN strings somewhere
     //  promotions
     //  listener notifications

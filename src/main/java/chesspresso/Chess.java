@@ -133,7 +133,6 @@ public abstract class Chess
     {
         final char c[] = {'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         return c[col+1];
-        //return String.valueOf('a' + (char)col);
     }
 
     /**
@@ -146,7 +145,6 @@ public abstract class Chess
     {
         final char r[] = {'-', '1', '2', '3', '4', '5', '6', '7', '8'};
         return r[row+1];
-        //return String.valueOf('1' + (char)row);
     }
 
     /**
@@ -231,11 +229,16 @@ public abstract class Chess
 
     /*========== pieces and stones ==========*/
 
-    public static final short
-            MIN_PIECE = 0, MAX_PIECE = 6,
+    public static final short MAX_PIECE = 6;
+
     // promotion pieces are from 0 to 4 to allow compact coding of moves
-    KING = 6, PAWN = 5, QUEEN = 4, ROOK = 3, BISHOP = 2, KNIGHT = 1,
-            NO_PIECE = 0;
+    public static final short KING = 6;
+    public static final short PAWN = 5;
+    public static final short QUEEN = 4;
+    public static final short ROOK = 3;
+    public static final short BISHOP = 2;
+    public static final short KNIGHT = 1;
+    public static final short NO_PIECE = 0;
 
     public static final short
             MIN_STONE = -6, MAX_STONE = 6,

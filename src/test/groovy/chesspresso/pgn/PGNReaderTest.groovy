@@ -48,4 +48,44 @@ class PGNReaderTest extends Specification {
         }
     }
 
+    // todo
+    //  https://github.com/BernhardSeybold/Chesspresso/issues/4#issue-2100816741
+    //
+    // I played a bit with the chesspresso library as part of my bachelor's thesis and found an error.
+    // I noticed that, when a certain situation occurs, the PGN Reader makes the wrong move and,
+    // as a result, messes up the entire game.
+    //
+    // The situation is the following:
+    // When there exist two knights, which can jump to one common field,
+    // but one of the knights is blocking chess.
+    // Then the pgn annotation won't specify, which knight will be moving to the one position,
+    // as there is only one legal way to do so.
+    // The PGN Reader however, reads it like that that the one knight blocking check
+    // will jump to another square, which is actually invalid.
+    // Look at the following game with this PGN:
+    //
+    //[Event "?"]
+    //[Site "?"]
+    //[Date "????.??.??"]
+    //[Round "?"]
+    //[White "?"]
+    //[Black "?"]
+    //[Result "*"]
+    //
+    //    1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nxe4 4. Nf3 Nf6 5. Ke2 Qe7+ 6. Kd3 Qc5 7. Nc3 d6 8.
+    //    Nd5 Nfd7 9. Ne3 a6 10. Nf5 a5 11. Ke4 a4 12. Kf4 a3 13. Kg3 axb2 14. Bxb2 Ra7
+    //    15. d4 Ra8 16. d5 Ra7 17. Bxg7 Bxg7 18. a4 Bf8 19. Rc1 Qc3 20. Nd4 Qa3 21. Qd3
+    //    Qxa4 22. Ne5 Qa3 23. Nef3 Ra8 24. Qb5 *
+    //
+    // Before move 20. the position is the following
+    // (in FEN: 1nb1kb1r/rppn1p1p/3p4/3P1N2/P7/2q2NK1/2P2PPP/2RQ1B1R w k - 3 20).
+    // And then the move Ne5 is played.
+    // Officially the position should now be the following:
+    // (1nb1kb1r/rppn1p1p/3p4/3P4/P2N4/2q2NK1/2P2PPP/2RQ1B1R w k - 3 20).
+    // But the PGN Reader reads it like that:
+    // 1nb1kb1r/rppn1p1p/3p4/3P1N2/P2N4/2q3K1/2P2PPP/2RQ1B1R b k - 4 20.
+    // This is invalid.
+    // And the entire game afterwards does not make any sense anymore.
+    //
+
 }

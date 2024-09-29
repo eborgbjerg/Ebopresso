@@ -12,7 +12,7 @@
  * $Id: NAG.java,v 1.2 2003/04/09 18:09:52 BerniMan Exp $
  */
 
-package chesspresso.position;
+package chesspresso.pgn;
 
 
 /**
@@ -30,7 +30,7 @@ public abstract class NAG
     // allow higher nags
     public static short NUM_OF_NAGS = 256;
 
-    private static String[] LONG_DESCRIPTION = {
+    private static final String[] LONG_DESCRIPTION = {
        "null annotation",  // 0
        "good move",  // 1
        "poor move",  // 2
@@ -173,7 +173,7 @@ public abstract class NAG
        "Black has severe time control pressure"
     };  // 139
         
-    private static String[] SHORT_DESCRIPTION = {
+    private static final String[] SHORT_DESCRIPTION = {
        null,  // 0
        "!",  // 1
        "?",  // 2
@@ -316,29 +316,41 @@ public abstract class NAG
        null  // "Black has severe time control pressure";  // 139
     };
     
-    /*================================================================================*/
-    
     public static String[] getDefinedShortNags()
     {
-        int num=0;
-        for (int i=0; i<SHORT_DESCRIPTION.length; i++) if (SHORT_DESCRIPTION[i] != null) num++;
+        int num = 0;
+        for (String s : SHORT_DESCRIPTION) {
+            if (s != null) {
+                num++;
+            }
+        }
         String[] res = new String[num];
-        num=0;
-        for (int i=0; i<SHORT_DESCRIPTION.length; i++) if (SHORT_DESCRIPTION[i] != null) res[num++] = SHORT_DESCRIPTION[i];
+        num = 0;
+        for (String s : SHORT_DESCRIPTION) {
+            if (s != null) {
+                res[num++] = s;
+            }
+        }
         return res;
     }
     
     public static String[] getUnDefinedShortNags()
     {
         int num=0;
-        for (int i=0; i<SHORT_DESCRIPTION.length; i++) if (SHORT_DESCRIPTION[i] == null) num++;
+        for (String s : SHORT_DESCRIPTION) {
+            if (s == null) {
+                num++;
+            }
+        }
         String[] res = new String[num];
         num=0;
-        for (int i=0; i<SHORT_DESCRIPTION.length; i++) if (SHORT_DESCRIPTION[i] == null) res[num++] = LONG_DESCRIPTION[i];
+        for (int i=0; i<SHORT_DESCRIPTION.length; i++) {
+            if (SHORT_DESCRIPTION[i] == null) {
+                res[num++] = LONG_DESCRIPTION[i];
+            }
+        }
         return res;
     }
-    
-    /*================================================================================*/
     
     public static String getLongString(short nag)
     {

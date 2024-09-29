@@ -14,7 +14,7 @@
 
 package chesspresso.game;
 
-import chesspresso.position.NAG;
+import chesspresso.pgn.NAG;
 import chesspresso.move.*;
 import java.io.*;
 
@@ -301,11 +301,6 @@ public class GameMoveModel
     
 //    public int goBackToMainLine(int index)
 //    {
-//        if (DEBUG) {
-//            System.out.println("goBackToMainLine " + index);
-//            write(System.out);
-//        }
-//        
 //        index--;
 //        int level = 1;
 //        while (index > 0) {
@@ -319,7 +314,6 @@ public class GameMoveModel
 //            else if (level == 0)            break;
 //            index--;
 //        }
-//        if (DEBUG) System.out.println("  --> " + index);
 //        return index;
 //    }
 

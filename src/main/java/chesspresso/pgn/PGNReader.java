@@ -17,7 +17,6 @@ package chesspresso.pgn;
 import chesspresso.*;
 import chesspresso.move.*;
 import chesspresso.game.*;
-import chesspresso.position.NAG;
 
 import java.io.*;
 import java.net.MalformedURLException;

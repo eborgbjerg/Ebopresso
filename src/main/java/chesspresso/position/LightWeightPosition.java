@@ -29,15 +29,13 @@ import chesspresso.move.*;
  */
 public class LightWeightPosition extends AbstractMutablePosition
 {
-    private int[] m_stone;
+    private final int[] m_stone;
     private int m_sqiEP;
     private int m_castles;
     private int m_toPlay;
     private int m_plyNumber;
     private int m_halfMoveClock;
-    
-    /*================================================================================*/
-    
+
     public LightWeightPosition()
     {
         m_stone = new int[Chess.NUM_OF_SQUARES];
@@ -50,17 +48,13 @@ public class LightWeightPosition extends AbstractMutablePosition
         set(position);
     }
     
-    /*================================================================================*/
-    
-    public int getStone(int sqi)  {return m_stone[sqi];}    
+    public int getStone(int sqi)  {return m_stone[sqi];}
     public int getToPlay()        {return m_toPlay;}
     public int getSqiEP()         {return m_sqiEP;}
     public int getCastles()       {return m_castles;}    
     public int getPlyNumber()     {return m_plyNumber;}    
     public int getHalfMoveClock() {return m_halfMoveClock;}
 
-    /*================================================================================*/
-    
     public void setStone(int sqi, int stone)
     {
         if (m_stone[sqi] != stone) {
@@ -108,9 +102,7 @@ public class LightWeightPosition extends AbstractMutablePosition
             fireHalfMoveClockChanged();
         }
     }
-    
-    /*================================================================================*/
-    
+
     public void doMove(short move) throws IllegalMoveException
     {
         throw new IllegalMoveException ("Moves not supported");
@@ -131,6 +123,7 @@ public class LightWeightPosition extends AbstractMutablePosition
     }
     
     public boolean canRedoMove() {return false;}
+
     public boolean redoMove() {return false;}
     
 }

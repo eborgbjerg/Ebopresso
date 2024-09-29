@@ -156,7 +156,7 @@ class ChessTest extends Specification {
         expect:
         pieceToChar(ROOK) == 'R' as char
         pieceToChar(QUEEN) == 'Q' as char
-        pieceToChar(WHITE_ROOK) == '?' as char
+        pieceToChar(WHITE_ROOK) == '?' as char // that's a stone, not a piece
         pieceToChar(MAX_PIECE + 1) == '?' as char
         pieceToChar(NO_PIECE) == ' ' as char
         pieceToChar(MAX_PIECE) == 'K' as char

@@ -27,7 +27,7 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
 {
     protected PositionListener[] m_listeners;     // protected to allow fast read access
     protected PositionChangeListener[] m_changeListeners;
-    protected boolean m_notifyListeners;      // ... to check whether or not to fire
+    protected boolean m_notifyListeners;      // ... to check whether to fire
     protected boolean m_notifyPositionChanged;
     
     /*================================================================================*/
@@ -45,13 +45,9 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     public int getPiece(int sqi) {return Chess.stoneToPiece(getStone(sqi));}
     public int getColor(int sqi) {return Chess.stoneToColor(getStone(sqi));}
     public boolean isSquareEmpty(int sqi) {return getStone(sqi) == Chess.NO_STONE;}
-    
-    /*================================================================================*/
-    
+
     public void toggleToPlay() {setToPlay(Chess.otherPlayer(getToPlay()));}
-    
-    /*================================================================================*/
-    
+
     public void clear()
     {
         boolean notify = m_notifyPositionChanged;
