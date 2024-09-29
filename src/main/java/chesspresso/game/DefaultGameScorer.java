@@ -39,14 +39,14 @@ public class DefaultGameScorer implements GameScorer
         
         int score = 0;
         score += moveModel.getTotalNumOfPlies()  * 3;
-        score += moveModel.getTotalCommentSize() * 1;
+        score += moveModel.getTotalCommentSize();
         
-        s = headerModel.getWhite();  if (s != null) score += s.length() * 1;
-        s = headerModel.getBlack();  if (s != null) score += s.length() * 1;
+        s = headerModel.getWhite();  if (s != null) score += s.length();
+        s = headerModel.getBlack();  if (s != null) score += s.length();
         if (headerModel.getDate()          != null) score += 8;
         if (headerModel.getResultStr()     != null) score += 8;  // TODO "real" result only
-        s = headerModel.getEvent();  if (s != null) score += s.length() * 1;
-        s = headerModel.getSite();   if (s != null) score += s.length() * 1;
+        s = headerModel.getEvent();  if (s != null) score += s.length();
+        s = headerModel.getSite();   if (s != null) score += s.length();
         if (headerModel.getWhiteEloStr()   != null) score += 4;
         if (headerModel.getBlackEloStr()   != null) score += 4;
         if (headerModel.getECO()           != null) score += 1;

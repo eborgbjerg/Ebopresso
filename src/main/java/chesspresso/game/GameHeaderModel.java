@@ -56,39 +56,30 @@ public class GameHeaderModel
         MODE_STANDARD_TAGS     = 1,
         MODE_ALL_TAGS          = 2;
     
-    //======================================================================
-    
-    private String[] m_standardTags;
-    private LinkedList m_otherTags;
-    private LinkedList m_otherTagValues;
-    private long m_long;
-    
-    //======================================================================
-    
+    private final String[] m_standardTags;
+    private LinkedList<String> m_otherTags;
+    private LinkedList<String> m_otherTagValues;
+
     public GameHeaderModel()
     {
         m_standardTags = new String[NUM_OF_STANDARD_TAGS];
         m_otherTags = null;
-        m_long = -1;
     }
     
     public GameHeaderModel(DataInput in, int mode) throws IOException
     {
         m_standardTags = new String[NUM_OF_STANDARD_TAGS];
         m_otherTags = null;
-        m_long = -1;
         load(in, mode);
     }
     
     public GameHeaderModel(GameHeaderModel model)
     {
         this();
-        for (int i=0; i<model.m_standardTags.length; i++) {
-            m_standardTags[i] = model.m_standardTags[i];
-        }
+        System.arraycopy(model.m_standardTags, 0, m_standardTags, 0, model.m_standardTags.length);
         if (m_otherTags != null) {
-            m_otherTags = new LinkedList(m_otherTags);
-            m_otherTagValues = new LinkedList(m_otherTagValues);
+            m_otherTags = new LinkedList<>(m_otherTags);
+            m_otherTagValues = new LinkedList<>(m_otherTagValues);
         }
     }
     
@@ -109,7 +100,7 @@ public class GameHeaderModel
             return m_standardTags[index];
         } else if (m_otherTags != null) {
             index = m_otherTags.indexOf(tagName);
-            return (index == -1 ? null : (String)m_otherTagValues.get(index));
+            return (index == -1 ? null : m_otherTagValues.get(index));
         } else {
             return null;
         }
@@ -123,7 +114,8 @@ public class GameHeaderModel
         } else if (!PGN.TAG_PLY_COUNT.equals(tagName)) {
             // ignore ply count since it can be derived from game
             if (m_otherTags == null) {
-                m_otherTags = new LinkedList(); m_otherTagValues = new LinkedList();
+                m_otherTags = new LinkedList<>();
+                m_otherTagValues = new LinkedList<>();
             }
             index = m_otherTags.indexOf(tagName);
             if (index == -1) {
@@ -160,8 +152,8 @@ public class GameHeaderModel
                 tags[index++] = TAG_NAMES[i];
         }
         if (m_otherTags != null) {
-            for (Iterator it = m_otherTags.iterator(); it.hasNext(); ) {
-                tags[index++] = (String)it.next();
+            for (String mOtherTag : m_otherTags) {
+                tags[index++] = mOtherTag;
             }
         }
         return tags;
@@ -202,7 +194,7 @@ public class GameHeaderModel
     private String readUTFNonNull(DataInput in) throws IOException
     {
         String s = in.readUTF();
-        return s.equals("") ? null : s;
+        return s.isEmpty() ? null : s;
     }
     
     public void load(DataInput in, int mode) throws IOException
@@ -274,7 +266,7 @@ public class GameHeaderModel
     private static boolean isStringSimilar(String s1, String s2)
     {
         if (s1 == null) {
-            return (s2 == null) ? true : false;
+            return s2 == null;
         } else if (s2 == null) {
             return false;
         } else {

@@ -723,16 +723,16 @@ public final class PGNReader extends PGN
     
     public GameModel[] parseAll() throws PGNSyntaxError, IOException
     {
-        List gameList = new ArrayList();
+        List<GameModel> gameList = new ArrayList<>();
         for (;;) {
             GameModel gameModel = parseGame();
             if (gameModel == null) break;
             gameList.add(gameModel);
         }
         GameModel[] res = new GameModel[gameList.size()];
-        int index =0;
-        for (Iterator it = gameList.iterator(); it.hasNext(); ) {
-            res[index++] = (GameModel)it.next();
+        int index = 0;
+        for (GameModel gameModel : gameList) {
+            res[index++] = gameModel;
         }
         return res;
     }

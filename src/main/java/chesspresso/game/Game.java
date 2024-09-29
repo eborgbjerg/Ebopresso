@@ -51,11 +51,6 @@ import chesspresso.move.IllegalMoveException;
  */
 public class Game implements PositionChangeListener
 {
-    
-    private static boolean DEBUG = false;
-    
-    //======================================================================
-    
     private GameModel m_model;
     private GameHeaderModel m_header;
     private GameMoveModel m_moves;
@@ -63,7 +58,7 @@ public class Game implements PositionChangeListener
     private int m_cur;
     private boolean m_ignoreNotifications;
     private boolean m_alwaysAddLine;        // during pgn parsing, always add new lines
-    private List m_changeListeners;
+    private List<GameModelChangeListener> m_changeListeners;
     
     //======================================================================
     
@@ -118,21 +113,21 @@ public class Game implements PositionChangeListener
     
     public void addChangeListener(GameModelChangeListener listener)
     {
-        if (m_changeListeners == null) m_changeListeners = new ArrayList();
+        if (m_changeListeners == null) m_changeListeners = new ArrayList<>();
         m_changeListeners.add(listener);
     }
     
     public void removeChangeListener(GameModelChangeListener listener)
     {
         m_changeListeners.remove(listener);
-        if (m_changeListeners.size() == 0) m_changeListeners = null;
+        if (m_changeListeners.isEmpty()) m_changeListeners = null;
     }
     
     protected void fireMoveModelChanged()
     {
         if (m_changeListeners != null) {
-            for (Iterator it=m_changeListeners.iterator(); it.hasNext(); ) {
-                ((GameModelChangeListener)it.next()).moveModelChanged(this);
+            for (GameModelChangeListener mChangeListener : m_changeListeners) {
+                mChangeListener.moveModelChanged(this);
             }
         }
     }
@@ -146,8 +141,6 @@ public class Game implements PositionChangeListener
     
     public void notifyMoveDone(ImmutablePosition position, short move)
     {
-        if (DEBUG) System.out.println("ChGame: move made in position " + move);
-        
         if (!m_ignoreNotifications) {
             if (!m_alwaysAddLine) {
                 short[] moves = getNextShortMoves();
@@ -165,8 +158,6 @@ public class Game implements PositionChangeListener
     
     public void notifyMoveUndone(ImmutablePosition position)
     {
-        if (DEBUG) System.out.println("ChGame: move taken back in position");
-        
         if (!m_ignoreNotifications) {
             m_cur = m_moves.goBack(m_cur, true);
         }
@@ -385,8 +376,6 @@ public class Game implements PositionChangeListener
                 moves[i] = m_position.getLastMove();
                 m_position.undoMove();
             } catch (IllegalMoveException ex) {
-                m_moves.write(System.out);
-                System.out.println("cur = " + m_cur + " move=" + GameMoveModel.valueToString(move));
                 ex.printStackTrace();
             }
         }
@@ -432,8 +421,6 @@ public class Game implements PositionChangeListener
     
     private boolean goBack(boolean silent)
     {
-        if (DEBUG) System.out.println("goBack");
-        
         int index = m_moves.goBack(m_cur, true);
         if (index != -1) {
 //        if (m_position.canUndoMove()) {  // do not rely on position since in silent mode it is not updated
@@ -452,8 +439,6 @@ public class Game implements PositionChangeListener
     
     private boolean goBackInLine(boolean silent)
     {
-        if (DEBUG) System.out.println("goBackInLine");
-        
         int index = m_moves.goBack(m_cur, false);
         if (index != -1) {
             m_cur = index; // needs to be set before undoing the move to allow listeners to check for curNode
@@ -470,25 +455,18 @@ public class Game implements PositionChangeListener
     
     private boolean goForward(boolean silent)
     {
-        if (DEBUG) System.out.println("goForward");
-        
         return goForward(0, silent);
     }
     
     private Move goForwardAndGetMove(boolean silent)
     {
-        if (DEBUG) System.out.println("goForwardAndGetMove");
-        
         return goForwardAndGetMove(0, silent);
     }
     
     private boolean goForward(int whichLine, boolean silent)
     {
-        if (DEBUG) System.out.println("goForward " + whichLine);
-        
         int index = m_moves.goForward(m_cur, whichLine);
         short shortMove = m_moves.getMove(index);
-        if (DEBUG) System.out.println("  move = " + Move.getString(shortMove));
         if (shortMove != GameMoveModel.NO_MOVE) {
             try {
                 m_cur = index;
@@ -509,11 +487,8 @@ public class Game implements PositionChangeListener
     
     private Move goForwardAndGetMove(int whichLine, boolean silent)
     {
-        if (DEBUG) System.out.println("goForwardAndGetMove " + whichLine);
-        
         int index = m_moves.goForward(m_cur, whichLine);
         short shortMove = m_moves.getMove(index);
-        if (DEBUG) System.out.println("  move = " + Move.getString(shortMove));
         if (shortMove != GameMoveModel.NO_MOVE) {
             try {
                 m_cur = index;
@@ -545,15 +520,11 @@ public class Game implements PositionChangeListener
     
     private void goBackToLineBegin(boolean silent)
     {
-        if (DEBUG) System.out.println("goBackToLineBegin");
-        
         while (goBackInLine(silent)) ;
     }
     
     private void goBackToMainLine(boolean silent)
     {
-        if (DEBUG) System.out.println("goBackToMainLine");
-        
         goBackToLineBegin(silent);
         goBack(silent);
         goForward(silent);
