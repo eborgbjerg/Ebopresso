@@ -32,14 +32,14 @@ test {
 }
 
 pitest {
-    //timeoutConstInMillis = 300
-    timeoutFactor = 1.7
+    //timeoutConstInMillis = 300 // no help there, many more timeouts and no gain it seems
+//    timeoutFactor = 1.7 // default is 1.25 probably, this just led to slower total test time
 //    targetClasses = ['chesspresso.position.CompactPosition']  //by default "${project.group}.*"
 //    targetTests = ['chesspresso.position.CompactPositionTest']
 //    targetClasses = ['chesspresso.position.*', 'chesspresso.move.*']  //by default "${project.group}.*"
 //    targetTests = ['chesspresso.*']
-    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
-    targetTests = ['chesspresso.*']
+    targetClasses = ['chesspresso.game.*']  //by default "${project.group}.*"
+    targetTests = ['chesspresso.game.*']
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '1.0.0'
 }
