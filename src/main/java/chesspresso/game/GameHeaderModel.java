@@ -18,7 +18,6 @@ import chesspresso.pgn.PGN;
 import java.util.*;
 import java.io.*;
 
-
 /**
  *
  * @author  Bernhard Seybold
@@ -29,7 +28,7 @@ public class GameHeaderModel
     
     //TODO store standard tags in variables, not array of string (eg elo as short)
     //     check tagValue for consistency, throw IllegalTagValue if wrong
-    //     in pgnreader, issue warning if value is incorrect
+    //     in pgn reader, issue warning if value is incorrect
     //TODO fen as standard tag, most probably not
     
     private static final int
@@ -82,9 +81,7 @@ public class GameHeaderModel
             m_otherTagValues = new LinkedList<>(m_otherTagValues);
         }
     }
-    
-    //======================================================================
-    
+
     private int getStandardTagIndex(String tagName)
     {
         for (int i = 0; i < NUM_OF_STANDARD_TAGS; i++) {
@@ -158,10 +155,7 @@ public class GameHeaderModel
         }
         return tags;
     }
-    
-    //======================================================================
-    // convenience methods for tags
-    
+
     public String getEvent()        {return m_standardTags[INDEX_EVENT];}
     public String getSite()         {return m_standardTags[INDEX_SITE];}
     public String getDate()         {return m_standardTags[INDEX_DATE];}
@@ -188,9 +182,7 @@ public class GameHeaderModel
     {
         return PGN.getElo(getBlackEloStr());
     }
-        
-    //======================================================================
-    
+
     private String readUTFNonNull(DataInput in) throws IOException
     {
         String s = in.readUTF();
@@ -246,23 +238,6 @@ public class GameHeaderModel
         // NOT YET SUPPORTED
     }
     
-    //======================================================================
-    
-    private static String getLastName(String name)
-    {
-        int index = name.indexOf(',');
-        if (index != -1) {
-            return name.substring(0, index).trim();
-        } else {
-            index = name.indexOf(' ');
-            if (index != -1) {
-                return name.substring(index + 1).trim();
-            } else {
-                return name.trim();
-            }
-        }
-    }
-    
     private static boolean isStringSimilar(String s1, String s2)
     {
         if (s1 == null) {
@@ -291,12 +266,8 @@ public class GameHeaderModel
     {
         return isStringSimilar(getWhite(), headerModel.getWhite()) &&
                isStringSimilar(getBlack(), headerModel.getBlack());
-//        return isStringSimilar(getLastName(getWhite()), getLastName(headerModel.getWhite())) &&
-//               isStringSimilar(getLastName(getBlack()), getLastName(headerModel.getBlack()));
     }
-    
-    //======================================================================
-    
+
     public String toString()
     {
         return getWhite() + " - " + getBlack() + " " + getResultStr() + " (" + getDate() + ")";

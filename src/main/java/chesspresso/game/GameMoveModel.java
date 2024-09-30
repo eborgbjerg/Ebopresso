@@ -28,19 +28,17 @@ public class GameMoveModel
 {
 
     private final static boolean EXTRA_CHECKS = true;
-    
-    //======================================================================
-    
+
     public final static int
         MODE_EVERYTHING = 0;
     
     final static short
-        NO_MOVE            = (short)Move.NO_MOVE,
-        LINE_START         = (short)Move.OTHER_SPECIALS,
-        LINE_END           = (short)Move.OTHER_SPECIALS +  1,
-        COMMENT_START      = (short)Move.OTHER_SPECIALS +  2,
-        COMMENT_END        = (short)Move.OTHER_SPECIALS +  3,
-        NAG_BASE           = (short)Move.OTHER_SPECIALS + 16,
+        NO_MOVE            = Move.NO_MOVE,
+        LINE_START         = Move.OTHER_SPECIALS,
+        LINE_END           = Move.OTHER_SPECIALS +  1,
+        COMMENT_START      = Move.OTHER_SPECIALS +  2,
+        COMMENT_END        = Move.OTHER_SPECIALS +  3,
+        NAG_BASE           = Move.OTHER_SPECIALS + 16,
         LAST_SPECIAL       = (short)(NAG_BASE + NAG.NUM_OF_NAGS);
     
     static {
@@ -48,15 +46,11 @@ public class GameMoveModel
             throw new RuntimeException("Not enough space to define special moves for game move model");
         }
     }
-    
-    //======================================================================
-    
+
     private short[] m_moves;
     private int m_size;
     private int m_hashCode;
 
-    //======================================================================
-    
     public GameMoveModel()
     {
         m_moves = new short[32];
@@ -83,25 +77,19 @@ public class GameMoveModel
             throw new RuntimeException("No move at index " + index + " move=" + valueToString(m_moves[index]));
         }
     }
-    
-    //======================================================================
-    
+
     private static boolean isMoveValue(short value)    {return !Move.isSpecial(value);}
     private static boolean isSpecialValue(short value) {return Move.isSpecial(value);}
     
     private static boolean isNagValue(short value)   {return value >= NAG_BASE && value < NAG_BASE + NAG.NUM_OF_NAGS;}
     private static short getNagForValue(short value) {return (short)(value - NAG_BASE);}
     private static short getValueForNag(short nag)   {return (short)(nag + NAG_BASE);}
-    
-    //======================================================================
-    
+
     private void changed()
     {
         m_hashCode = 0;
     }
-    
-    //======================================================================
-    
+
     public boolean hasNag(int index, short nag)
     {
         short nagValue = getValueForNag(nag);
@@ -117,9 +105,11 @@ public class GameMoveModel
     
     public short[] getNags(int index)
     {
-        if (EXTRA_CHECKS)
-            if (!isMoveValue(m_moves[index]))
+        if (EXTRA_CHECKS) {
+            if (!isMoveValue(m_moves[index])) {
                 throw new RuntimeException("No move at index " + index + " move=" + valueToString(m_moves[index]));
+            }
+        }
         
         int num = 0;
         while (isNagValue(m_moves[index + 1])) {index++; num++;}
@@ -169,9 +159,7 @@ public class GameMoveModel
         changed();
         return changed;
     }
-    
-    //======================================================================
-    
+
     private int skipComment(int index)
     {
         if (m_moves[index] == COMMENT_START) {
@@ -256,9 +244,7 @@ public class GameMoveModel
         boolean changed = removeComment(index);
         return addComment(index, comment) || changed;
     }
-    
-    //======================================================================
-    
+
     public boolean hasLines()
     {
         for (int i=1; i<m_size; i++) {
@@ -451,9 +437,7 @@ public class GameMoveModel
         boolean nextMove = isMoveValue(m_moves[goForward(index)]);
         return (nextMove);
     }
-    
-    //======================================================================
-    
+
     private int findEarliestNoMove(int index)
     {
         while (index > 1 && m_moves[index - 1] == NO_MOVE) index--;
@@ -506,9 +490,10 @@ public class GameMoveModel
     
     public int appendAsRightMostLine(int index, short move)
     {
-        if (EXTRA_CHECKS)
+        if (EXTRA_CHECKS) {
             checkLegalCursor(index);
-        
+        }
+
         if (hasNextMove(index)) {
             index = goForward(index);  // go to the move for which an alternative is entered
             index = goForward(index);  // go to the end of all existing lines
@@ -561,8 +546,6 @@ public class GameMoveModel
         changed();
     }
 
-    //======================================================================
-    
     public int pack(int index)
     {
         int newSize = 0;
@@ -589,9 +572,7 @@ public class GameMoveModel
         
         return index;
     }
-        
-    //======================================================================
-    
+
     public void load(DataInput in, int mode) throws IOException
     {
         m_size = in.readInt() + 2;
@@ -623,8 +604,6 @@ public class GameMoveModel
         out.write(data);
     }
 
-    //======================================================================
-    
     static String valueToString(short value)
     {
         if      (value == LINE_START)     return "(";
@@ -653,18 +632,7 @@ public class GameMoveModel
         }
         out.println();
     }
-    
-    //======================================================================
-    
-//    private static long[] s_rand = new long[65536];
-//    static {
-//        long randomNumber = 100;
-//        for (int i=0; i<65536; i++) {
-//            randomNumber = (randomNumber * 0x5DEECE66DL + 0xBL);
-//            s_rand[i] = randomNumber;
-//        }
-//    }
-    
+
 //    private static int s_equals = 0, s_fullCompare = 0, s_true = 0, s_false = 0;
     
     public long getHashCode()
