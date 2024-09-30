@@ -118,8 +118,6 @@ public abstract class AbstractPosition implements ImmutablePosition
     }
 
     public static boolean isWhiteToPlay(long hashCode) {return (hashCode & HASH_TOPLAY_MULT) == 0L;}
-    
-    /*================================================================================*/
 
     public long getHashCode()
     {

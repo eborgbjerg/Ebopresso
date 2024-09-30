@@ -47,8 +47,6 @@ public class FEN
     public static final String START_POSITION =
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
-    //======================================================================
-    
     public static void initFromFEN(MutablePosition pos, String fen, boolean strict) throws IllegalArgumentException
     {
         pos.clear();

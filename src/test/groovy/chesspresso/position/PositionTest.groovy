@@ -35,6 +35,7 @@ class PositionTest extends Specification {
         p.getColor(Chess.A8) == Chess.BLACK
         p.getColor(Chess.A7) == Chess.BLACK
         p.getColor(Chess.D5) == Chess.NOBODY
+        p.domination == 0.0d
         p.hashCode == 6186144174769381545
 
         when:
@@ -80,6 +81,7 @@ class PositionTest extends Specification {
         !p.mate
         !p.staleMate
         !p.terminal
+        p.domination == -7.0d
         p.hashCode == 3415703449857218074
 
         when:
@@ -117,7 +119,7 @@ class PositionTest extends Specification {
         p.FEN == 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1'
         p.legal
         p.canMove()
-        p.getMaterial() == 0
+        p.material == 0
         p.getMovesAsString(p.allMoves, true) == '{a5,b5,c5,d5,e5,f5,g5,h5,a6,Na6,b6,c6,Nc6,d6,e6,f6,Nf6,g6,h6,Nh6}'
     }
 
@@ -143,6 +145,8 @@ class PositionTest extends Specification {
         p.getStone(Chess.E7) == Chess.BLACK_ROOK
         p.FEN == '4k3/4r3/8/8/8/8/4R3/4K3 w - - 0 1'
         p.halfMoveClock == 0
+        p.domination == 0.0d
+        p.material == 0
         p.hashCode == 5375441042984917594
 
         when:
@@ -160,7 +164,7 @@ class PositionTest extends Specification {
         Move.getToSqi(moves[3]) == Chess.E6
         p.getMove(Chess.E2,Chess.E6,Chess.ROOK) == moves[3]
         Move.getToSqi(moves[4]) == Chess.E7
-        p.getMove(Chess.E2,Chess.E6,Chess.ROOK) == moves[4]
+        p.getMove(Chess.E2,Chess.E7,Chess.ROOK) == moves[4]
 
         when:
         p.inverse()
@@ -173,8 +177,38 @@ class PositionTest extends Specification {
         !p.staleMate
         !p.terminal
         p.canMove()
-        p.getMaterial() == 0
+        p.material == 0
         p.getMovesAsString(p.allMoves, true) == '{Rxe2+,Re3,Re4,Re5,Re6,Kd7,Kf7,Kd8,Kf8}'
+
+        when:
+        p.setStone(Chess.A7, Chess.BLACK_QUEEN)
+
+        then:
+        p.material == 900
+    }
+
+    def 'material counting'() {
+        given:
+        Position p = new Position('4k3/4r3/8/8/8/8/4R3/4K3 w - - 0 1', true)
+
+        when:
+        p.setStone(Chess.A7, stoneToSet)
+
+        then:
+        p.material == value
+
+        where:
+        stoneToSet         | value
+        Chess.WHITE_QUEEN  | 900
+        Chess.WHITE_ROOK   | 500
+        Chess.WHITE_BISHOP | 325
+        Chess.WHITE_KNIGHT | 300
+        Chess.WHITE_PAWN   | 100
+        Chess.BLACK_QUEEN  | -900
+        Chess.BLACK_ROOK   | -500
+        Chess.BLACK_BISHOP | -325
+        Chess.BLACK_KNIGHT | -300
+        Chess.BLACK_PAWN   | -100
     }
 
     def 'kiwipete position'() {
@@ -200,6 +234,8 @@ class PositionTest extends Specification {
         p.getStone(Chess.E7) == Chess.BLACK_QUEEN
         p.FEN == 'r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1'
         p.halfMoveClock == 0
+        p.domination == 7.0d
+        p.material == 0
         p.hashCode == 6134742301751089191
 
         when:
@@ -258,6 +294,8 @@ class PositionTest extends Specification {
         p.getStone(Chess.E7) == Chess.NO_STONE
         p.FEN == '8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1'
         p.halfMoveClock == 0
+        p.domination == 4.0d
+        p.material == 0
         p.hashCode == 1806705713370623020
 
         when:
@@ -306,6 +344,8 @@ class PositionTest extends Specification {
         p.getMove(Chess.G1,Chess.H1,Chess.NO_PIECE) == moves[0]
         !p.isSquarePossibleEPSquare(Chess.H1)
         AbstractPosition.isWhiteToPlay(p.hashCode)
+        p.domination == -4.0d
+        p.material == 100
 
         when:
         def m = new Move(moves[0] as short,Chess.KING,6,0,false,false,false)
@@ -368,7 +408,7 @@ class PositionTest extends Specification {
     }
 
     // todo
-    //  doMove(Move)
+    //  check positions
     //  maybe centralize FEN strings somewhere
     //  promotions
     //  listener notifications
@@ -378,6 +418,8 @@ class PositionTest extends Specification {
     //  illegal position (maybe by setting/removing a stone explicitly?)
     //  mate
     //  stalemate
-    //  check positions
+    //  getAllReCapturingMoves
+    //  getAllCapturingMoves
+    //  getAllNonCapturingMoves
 
 }

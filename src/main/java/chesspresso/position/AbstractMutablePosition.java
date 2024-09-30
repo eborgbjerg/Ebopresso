@@ -14,9 +14,7 @@
 
 package chesspresso.position;
 
-
 import chesspresso.*;
-
 
 /**
  *
@@ -29,9 +27,7 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     protected PositionChangeListener[] m_changeListeners;
     protected boolean m_notifyListeners;      // ... to check whether to fire
     protected boolean m_notifyPositionChanged;
-    
-    /*================================================================================*/
-    
+
     protected AbstractMutablePosition()
     {
         m_listeners = null;
@@ -39,9 +35,7 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
         m_notifyListeners = true;
         m_notifyPositionChanged = true;
     }
-    
-    /*================================================================================*/
-    
+
     public int getPiece(int sqi) {return Chess.stoneToPiece(getStone(sqi));}
     public int getColor(int sqi) {return Chess.stoneToColor(getStone(sqi));}
     public boolean isSquareEmpty(int sqi) {return getStone(sqi) == Chess.NO_STONE;}
@@ -94,9 +88,6 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
         m_notifyPositionChanged = notify;
         firePositionChanged();
     }
-    
-    /*================================================================================*/
-    // inverse
     
     public final void inverse()
     {
@@ -160,8 +151,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int stone = getStone(sqi);
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].squareChanged(sqi, stone);
+            for (PositionListener mListener : m_listeners) {
+                mListener.squareChanged(sqi, stone);
             }
             firePositionChanged();
         }
@@ -171,8 +162,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int toPlay = getToPlay();
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].toPlayChanged(toPlay);
+            for (PositionListener mListener : m_listeners) {
+                mListener.toPlayChanged(toPlay);
             }
             firePositionChanged();
         }
@@ -182,8 +173,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int sqiEP = getSqiEP();
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].sqiEPChanged(sqiEP);
+            for (PositionListener mListener : m_listeners) {
+                mListener.sqiEPChanged(sqiEP);
             }
             firePositionChanged();
         }
@@ -193,8 +184,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int castles = getCastles();
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].castlesChanged(castles);
+            for (PositionListener mListener : m_listeners) {
+                mListener.castlesChanged(castles);
             }
             firePositionChanged();
         }
@@ -204,8 +195,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int plyNumber = getPlyNumber();
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].plyNumberChanged(plyNumber);
+            for (PositionListener mListener : m_listeners) {
+                mListener.plyNumberChanged(plyNumber);
             }
             firePositionChanged();
         }
@@ -215,8 +206,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     {
         if (m_notifyListeners && m_listeners != null) {
             int halfMoveClock = getHalfMoveClock();
-            for (int i=0; i<m_listeners.length; i++) {
-                m_listeners[i].halfMoveClockChanged(halfMoveClock);
+            for (PositionListener mListener : m_listeners) {
+                mListener.halfMoveClockChanged(halfMoveClock);
             }
             firePositionChanged();
         }
@@ -225,8 +216,8 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     protected void fireMoveDone(short move)
     {
         if (m_notifyListeners && m_changeListeners != null) {
-            for (int i=0; i<m_changeListeners.length; i++) {
-                m_changeListeners[i].notifyMoveDone(this, move);
+            for (PositionChangeListener mChangeListener : m_changeListeners) {
+                mChangeListener.notifyMoveDone(this, move);
             }
         }
     }
@@ -234,18 +225,17 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     protected void fireMoveUndone()
     {
         if (m_notifyListeners && m_changeListeners != null) {
-            for (int i=0; i<m_changeListeners.length; i++) {
-                m_changeListeners[i].notifyMoveUndone(this);
+            for (PositionChangeListener mChangeListener : m_changeListeners) {
+                mChangeListener.notifyMoveUndone(this);
             }
         }
     }
     
-//    private void firePositionChanged()
     public void firePositionChanged()
     {
         if (m_notifyPositionChanged && m_changeListeners != null) {
-            for (int i=0; i<m_changeListeners.length; i++) {
-                m_changeListeners[i].notifyPositionChanged(this);
+            for (PositionChangeListener mChangeListener : m_changeListeners) {
+                mChangeListener.notifyPositionChanged(this);
             }
         }
     }
@@ -300,7 +290,6 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
     
     public final void addPositionChangeListener(PositionChangeListener listener)
     {
-//        System.out.println("addPositionChangeListener " + listener);
         if (m_changeListeners == null) {
             m_changeListeners = new PositionChangeListener[1];
             m_changeListeners[0] = listener;
@@ -312,14 +301,10 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
         }
         
         listener.notifyPositionChanged(this);  // for initialization
-//        for (int i=0; i<m_changeListeners.length; i++) {
-//            System.out.println(m_changeListeners[i]);
-//        }
     }
     
     public final void removePositionChangeListener(PositionChangeListener listener)
     {
-//        System.out.println("removePositionChangeListener " + listener);
         for (int i=0; i<m_changeListeners.length; i++) {
             if (m_changeListeners[i] == listener) {
                 if (m_changeListeners.length == 1) {
@@ -333,9 +318,6 @@ public abstract class AbstractMutablePosition extends AbstractPosition implement
                 break;  // =====>
             }
         }
-//        for (int i=0; i<m_changeListeners.length; i++) {
-//            System.out.println(m_changeListeners[i]);
-//        }
     }
     
 }
