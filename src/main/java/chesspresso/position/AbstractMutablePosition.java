@@ -23,7 +23,10 @@ import chesspresso.*;
  */
 public abstract class AbstractMutablePosition extends AbstractPosition implements MutablePosition
 {
+    // todo switch to List after 100% test coverage
     protected PositionListener[] m_listeners;     // protected to allow fast read access
+
+    // todo switch to List after 100% test coverage
     protected PositionChangeListener[] m_changeListeners;
     protected boolean m_notifyListeners;      // ... to check whether to fire
     protected boolean m_notifyPositionChanged;

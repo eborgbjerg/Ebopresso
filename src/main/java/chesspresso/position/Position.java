@@ -265,8 +265,6 @@ public final class Position extends AbstractMoveablePosition
         // can use up to 47 bits (64 bits - 2 * 6 to store king squares - 5 for change mask)
     
 
-    //======================================================================
-    
     private long m_bbWhites, m_bbBlacks, m_bbPawns, m_bbKnights, m_bbBishops, m_bbRooks;
     private int m_whiteKing, m_blackKing;  // actually only a short (6 bit)
     private long m_flags;
@@ -318,20 +316,19 @@ public final class Position extends AbstractMoveablePosition
         super.clear();
 //        m_bakIndex = 0;
     }
+
+    public int getToPlay()                {return      ((m_flags) & TO_PLAY_MASK) == 0 ? Chess.WHITE : Chess.BLACK;}
+    private int getNotToPlay()            {return      ((m_flags) & TO_PLAY_MASK) != 0 ? Chess.WHITE : Chess.BLACK;}
+    public boolean isSquareEmpty(int sqi) {return      ((m_bbWhites | m_bbBlacks) & ofSquare(sqi)) == 0L;}
+
+    public int getCastles()               {return (int) (m_flags >> CASTLES_SHIFT) & CASTLES_MASK;}
+    public int getSqiEP()                 {return (int)((m_flags >> SQI_EP_SHIFT) & SQI_EP_MASK) + Chess.NO_SQUARE;}
+    private int getHashColEP()            {return (int)((m_flags >> HASH_COL_EP_SHIFT) & HASH_COL_EP_MASK) + Chess.NO_SQUARE;}
+    public int getHalfMoveClock()         {return (int) (m_flags >> HALF_MOVE_CLOCK_SHIFT) & HALF_MOVE_CLOCK_MASK;}
+    public int getPlyNumber()             {return (int) (m_flags >> PLY_NUMBER_SHIFT) & PLY_NUMBER_MASK;}
+    public long getHashCode()             {return m_hashCode;}
     
-    //======================================================================
-    
-    public final int getToPlay()                {return      ((m_flags) & TO_PLAY_MASK) == 0 ? Chess.WHITE : Chess.BLACK;}
-    private final int getNotToPlay()            {return      ((m_flags) & TO_PLAY_MASK) != 0 ? Chess.WHITE : Chess.BLACK;}
-    public final boolean isSquareEmpty(int sqi) {return      ((m_bbWhites | m_bbBlacks) & ofSquare(sqi)) == 0L;}
-    public final int getCastles()               {return (int) (m_flags >> CASTLES_SHIFT) & CASTLES_MASK;}
-    public final int getSqiEP()                 {return (int)((m_flags >> SQI_EP_SHIFT) & SQI_EP_MASK) + Chess.NO_SQUARE;}
-    private final int getHashColEP()            {return (int)((m_flags >> HASH_COL_EP_SHIFT) & HASH_COL_EP_MASK) + Chess.NO_SQUARE;}
-    public final int getHalfMoveClock()         {return (int) (m_flags >> HALF_MOVE_CLOCK_SHIFT) & HALF_MOVE_CLOCK_MASK;}
-    public final int getPlyNumber()             {return (int) (m_flags >> PLY_NUMBER_SHIFT) & PLY_NUMBER_MASK;}
-    public final long getHashCode()             {return m_hashCode;}
-    
-    public final int getStone(int sqi)
+    public int getStone(int sqi)
     {
         long bbSqi = ofSquare(sqi);
         if ((m_bbWhites & bbSqi) != 0L) {
@@ -353,7 +350,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    public final int getPiece(int sqi)
+    public int getPiece(int sqi)
     {
         long bbSqi = ofSquare(sqi);
         if ((m_bbPawns & bbSqi) != 0L) return Chess.PAWN;
@@ -370,7 +367,7 @@ public final class Position extends AbstractMoveablePosition
      * @param sqi the square
      * @return WHITE, BLACK or NOBODY
      */
-    public final int getColor(int sqi)
+    public int getColor(int sqi)
     {
         long bbSqi = ofSquare(sqi);
         if ((m_bbWhites & bbSqi) != 0L) return Chess.WHITE;
@@ -378,7 +375,7 @@ public final class Position extends AbstractMoveablePosition
         return Chess.NOBODY;
     }
     
-    private final long getBitBoard(int stone)
+    private long getBitBoard(int stone)
     {
         switch(stone) {
             case Chess.NO_STONE:     return 0L;
@@ -399,7 +396,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
 
-    public final void setStone(int sqi, int stone)
+    public void setStone(int sqi, int stone)
     {
         int old = getStone(sqi);
         if (old != stone) {
@@ -448,7 +445,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    public final void setPlyNumber(int plyNumber)
+    public void setPlyNumber(int plyNumber)
     {
         long flags = m_flags;
         m_flags &= ~(PLY_NUMBER_MASK << PLY_NUMBER_SHIFT);
@@ -458,7 +455,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    private final void incPlyNumber()
+    private void incPlyNumber()
     {
         m_flags += 1L << PLY_NUMBER_SHIFT;
         if (m_notifyListeners && m_listeners != null) firePlyNumberChanged();
@@ -474,7 +471,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    public final void setCastles(int castles)
+    public void setCastles(int castles)
     {
         int oldCastles = getCastles();
         if (oldCastles != castles) {
@@ -523,14 +520,14 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    public final void setToPlay(int toPlay)
+    public void setToPlay(int toPlay)
     {
         if (toPlay != getToPlay()) {
             toggleToPlay();
         }
     }
     
-    public final void toggleToPlay()
+    public void toggleToPlay()
     {
         m_flags ^= (TO_PLAY_MASK);
         /*---------- hash value ----------*/
@@ -539,7 +536,7 @@ public final class Position extends AbstractMoveablePosition
         if (m_notifyListeners && m_listeners != null) fireToPlayChanged();
     }
     
-    private final void setMove(short move)
+    private void setMove(short move)
     {
         boolean increaseHalfMoveClock = true;
         int sqiEP = Chess.NO_SQUARE;
@@ -959,14 +956,17 @@ public final class Position extends AbstractMoveablePosition
     {
         super.validate();
         
-        if (m_whiteKing < 0 || m_whiteKing >= Chess.NUM_OF_SQUARES)
+        if (m_whiteKing < 0 || m_whiteKing >= Chess.NUM_OF_SQUARES) {
             throw new IllegalPositionException("White king square illegal: " + m_whiteKing);
-        if (m_blackKing < 0 || m_blackKing >= Chess.NUM_OF_SQUARES)
+        }
+        if (m_blackKing < 0 || m_blackKing >= Chess.NUM_OF_SQUARES) {
             throw new IllegalPositionException("White king square illegal: " + m_blackKing);
+        }
         
         int kingSquare = (getToPlay() == Chess.WHITE ? m_blackKing : m_whiteKing);
-        if (isAttacked(kingSquare, getToPlay(), 0L))
+        if (isAttacked(kingSquare, getToPlay(), 0L)) {
             throw new IllegalPositionException("King of notToPlay is checked: " + Chess.sqiToStr(kingSquare));
+        }
         
         if (super.getHashCode() != getHashCode()) {
             System.out.println("Wrong hash code " + getHashCode() + " should be " + super.getHashCode());
@@ -995,7 +995,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
 
-    public final boolean isCheck()
+    public boolean isCheck()
     {
         int cacheInfo = (int)(m_flags >> CHECK_SHIFT) & CHECK_MASK;
         if (cacheInfo == FLAG_YES) {
@@ -1068,7 +1068,7 @@ public final class Position extends AbstractMoveablePosition
         }
     }
     
-    private final int getFromSqi(int piece, int colFrom, int rowFrom, int to)
+    private int getFromSqi(int piece, int colFrom, int rowFrom, int to)
     {
         long bb = getBitBoard(Chess.pieceToStone(piece, getToPlay()));
         if (colFrom != Chess.NO_COL) {bb &= ofCol(colFrom);}
@@ -1175,11 +1175,15 @@ public final class Position extends AbstractMoveablePosition
         int kingSqi = (color == Chess.WHITE ? m_whiteKing : m_blackKing);
         long bbSqi = ofSquare(sqi);
         
-        if ((QUEEN_ATTACKS[kingSqi] & bbSqi) == 0L) return NO_DIR;  // =====>
+        if ((QUEEN_ATTACKS[kingSqi] & bbSqi) == 0L) {
+            return NO_DIR;  // =====>
+        }
         
         int kingDir = DIR[kingSqi][sqi];
         long kingDirRim = RIM_BOARD[kingDir];
-        if ((kingDirRim & bbSqi) != 0L) return NO_DIR;  // =====>  nothing behind piece
+        if ((kingDirRim & bbSqi) != 0L) {
+            return NO_DIR;  // =====>  nothing behind piece
+        }
         
         long bbTarget;
         if (isDiagonal(kingDir)) {
@@ -1190,23 +1194,34 @@ public final class Position extends AbstractMoveablePosition
         if (bbTarget == 0L) return NO_DIR;  // =====>
         
         long bbAllPieces = m_bbWhites | m_bbBlacks;
-        if ((SQUARES_BETWEEN[kingSqi][sqi] & bbAllPieces) != 0L) return NO_DIR;  // =====>
+        if ((SQUARES_BETWEEN[kingSqi][sqi] & bbAllPieces) != 0L) {
+            return NO_DIR;  // =====>
+        }
         
         long bb = bbSqi;
         int vector = DIR_SHIFT[kingDir];
-        do{
+        do {
             // bb not on rim checked above -> can increment without test
-            if (vector < 0) bb >>>= -vector; else bb <<= vector;
+            if (vector < 0) {
+                bb >>>= -vector;
+            } else {
+                bb <<= vector;
+            }
             //            ChBitBoard.printBoard(bb);
-            if ((bbTarget & bb) != 0L) return kingDir;  // =====>
-            if ((bbAllPieces & bb) != 0L) return NO_DIR;  // =====>
+            if ((bbTarget & bb) != 0L) {
+                return kingDir;  // =====>
+            }
+            if ((bbAllPieces & bb) != 0L) {
+                return NO_DIR;  // =====>
+            }
         } while ((kingDirRim & bb) == 0L);
+
         return NO_DIR;
     }
     
     private static int sign(int i)
     {
-        if (i<0) {return -1;} else if (i>0) {return 1;} else {return 0;}
+        return Integer.compare(i, 0);
     }
     
     private boolean attacks(int from, int to)
@@ -1273,7 +1288,7 @@ public final class Position extends AbstractMoveablePosition
         return false;
     }
     
-    private final long getDirectAttackers(int sqi, int color, boolean includeInbetweenSquares)
+    private long getDirectAttackers(int sqi, int color, boolean includeInbetweenSquares)
     {
         long attackers = 0L;
         long bbAttackerPieces = (color == Chess.WHITE ? m_bbWhites : m_bbBlacks);
@@ -1313,7 +1328,7 @@ public final class Position extends AbstractMoveablePosition
         return attackers;
     }
     
-    private final long getAllAttackers(int sqi, int color)
+    private long getAllAttackers(int sqi, int color)
     {
         long attackers = 0L;
         long bbAttackerPieces = (color == Chess.WHITE ? m_bbWhites : m_bbBlacks);
@@ -1362,7 +1377,7 @@ public final class Position extends AbstractMoveablePosition
         return attackers;
     }
     
-    private final int getAllKnightMoves(int moveIndex, long bbTargets)
+    private int getAllKnightMoves(int moveIndex, long bbTargets)
     {
         if (bbTargets == 0L) return moveIndex;
         
@@ -1386,7 +1401,7 @@ public final class Position extends AbstractMoveablePosition
         return moveIndex;
     }
     
-    private final int getAllSlidingMoves(int moveIndex, long bbTargets, long bbPieces, int piece)
+    private int getAllSlidingMoves(int moveIndex, long bbTargets, long bbPieces, int piece)
     {
         if (bbTargets == 0L) return moveIndex;
         
@@ -1430,7 +1445,7 @@ public final class Position extends AbstractMoveablePosition
         return moveIndex;
     }
     
-    private final int getAllKingMoves(int moveIndex, long bbTargets, boolean withCastles)
+    private int getAllKingMoves(int moveIndex, long bbTargets, boolean withCastles)
     {
         if (bbTargets == 0L) return moveIndex;
         
@@ -1478,7 +1493,7 @@ public final class Position extends AbstractMoveablePosition
         return moveIndex;
     }
     
-    private final int getAllPawnMoves(int moveIndex, long bbTargets)
+    private int getAllPawnMoves(int moveIndex, long bbTargets)
     {
         if (bbTargets == 0L) return moveIndex;
         
@@ -1621,7 +1636,7 @@ public final class Position extends AbstractMoveablePosition
         return getAllMoves(bbTargets, bbPawnTargets);
     }
     
-    private final short[] getAllMoves(long bbTargets, long bbPawnTargets)
+    private short[] getAllMoves(long bbTargets, long bbPawnTargets)
     {
         if (bbTargets == 0L) return new short[0];  // =====>
         

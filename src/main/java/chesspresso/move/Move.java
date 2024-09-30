@@ -16,7 +16,6 @@ package chesspresso.move;
 
 import chesspresso.*;
 
-
 /**
  * Abstraction of a chess move.<br>
  *
@@ -42,8 +41,6 @@ import chesspresso.*;
 public class Move
 {
 
-    //======================================================================
-    
     /**
      * Returns the moves in a normalized order such that the same set of moves
      * always yields the same order. Implementation is: short values ascending.
@@ -141,8 +138,6 @@ public class Move
         s_promo[Chess.ROOK]     = PROMO_ROOK;
         s_promo[Chess.QUEEN]    = PROMO_QUEEN;
     }
-    
-    //======================================================================
 
     /**
      * Manufacture a regular move.
@@ -226,8 +221,6 @@ public class Move
     
     public static boolean isSpecial          (short move) {return (move & PROMO_MASK) == SPECIAL_MOVE;}
     public static boolean isValid            (short move) {return (move & PROMO_MASK) != SPECIAL_MOVE;}
-    
-    /*================================================================================*/
 
     public static String getBinaryString(short move)
     {
@@ -261,13 +254,11 @@ public class Move
         }
     }
 
-    /*================================================================================*/
-    
     private static final Move
         MOVE_ILLEGAL_MOVE = new Move (ILLEGAL_MOVE, Chess.NO_PIECE, Chess.NO_ROW, Chess.NO_COL, false, false, false);
     
     /**
-     * Premanufactured illegal move, always returns the same instance.
+     * Pre-manufactured illegal move, always returns the same instance.
      *
      *@return an illegal move
      */
@@ -317,9 +308,7 @@ public class Move
     {
         return new Move(getLongCastle(toPlay), Chess.KING, Chess.NO_COL, Chess.NO_ROW, isCheck, isMate, whiteMove);
     }
-    
-    /*================================================================================*/
-    
+
     // encoding for additional information
     private static final int COL_FROM_MUL    = 0x00000010;
     private static final int COL_FROM_MASK   = 0x000000F0;
@@ -337,8 +326,6 @@ public class Move
     private final short m_move;
     private final int m_info;
 
-    /*================================================================================*/
-    
     /**
      * Creates a full move.
      *
@@ -361,9 +348,7 @@ public class Move
                + (isWhiteMove  ? TOPLAY_MUL  : 0)
                + MOVING_MUL * movingPiece;
     }
-    
-    /*================================================================================*/
-    
+
     public short getShortMoveDesc()     {return (short)m_move;}
     public int getPromo()               {return Move.getPromotionPiece(m_move);}
     public int getFromSqi()             {return Move.getFromSqi(m_move);}
@@ -379,8 +364,6 @@ public class Move
     public boolean isLongCastle()       {return Move.isLongCastle(m_move);}
     public boolean isValid()            {return Move.isValid(m_move);}
     public boolean isWhiteMove()        {return (m_info & TOPLAY_MASK) != 0;}
-    
-    /*================================================================================*/
     
     /**
      * Equality test. Two move are equal if and only if all arguments match.

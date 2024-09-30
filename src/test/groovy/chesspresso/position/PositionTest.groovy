@@ -135,6 +135,10 @@ class PositionTest extends Specification {
         !p.staleMate
         !p.terminal
         p.toPlay == Chess.WHITE
+        !p.isCastlePossible(ImmutablePosition.WHITE_SHORT_CASTLE)
+        !p.isCastlePossible(ImmutablePosition.WHITE_LONG_CASTLE)
+        !p.isCastlePossible(ImmutablePosition.BLACK_SHORT_CASTLE)
+        !p.isCastlePossible(ImmutablePosition.BLACK_LONG_CASTLE)
         p.getPiece(Chess.E1) == Chess.KING
         p.getStone(Chess.E1) == Chess.WHITE_KING
         p.getPiece(Chess.E8) == Chess.KING
@@ -421,5 +425,6 @@ class PositionTest extends Specification {
     //  getAllReCapturingMoves
     //  getAllCapturingMoves
     //  getAllNonCapturingMoves
+    //  p.getMove() for a castling move
 
 }
