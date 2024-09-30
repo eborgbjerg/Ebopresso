@@ -14,66 +14,14 @@
 
 package chesspresso.position;
 
-
 import chesspresso.*;
 import chesspresso.move.*;
 
 import java.text.*;
 
-
 public final class Position extends AbstractMoveablePosition
 {
 
-    //======================================================================
-    // Profiling
-    
-    private final static boolean PROFILE = false;
-    
-    private static long m_numIsAttacked = 0;
-    private static long m_numDirectAttackers = 0;
-    private static long m_numGetAllAttackers = 0;
-    private static long m_numIsCheck = 0;
-    private static long m_numIsMate = 0;
-    private static long m_numIsStaleMate = 0;
-    private static long m_numGetAllMoves = 0;
-    private static long m_numPositions = 0;
-    private static long m_numGetPinnedDirection = 0;
-    private static long m_numDoMove = 0;
-    private static long m_numLongsBackuped = 0;
-    private static long m_numUndoMove = 0;
-    private static long m_numSet = 0;
-    private static long m_numGetSquare = 0;
-    
-    private static final DecimalFormat df = new DecimalFormat("#");
-    
-    private static String format(long num)
-    {
-        String res = "               " + df.format(num);
-        return res.substring(res.length() - 12);
-    }
-    
-    public static void printProfile()
-    {
-        if (!PROFILE) return;  // =====>
-
-        System.out.println("Instances created:");
-        System.out.println("  ChPosition:         " + format(m_numPositions));
-        System.out.println("Methods called:");
-        System.out.println("  isAttacked:         " + format(m_numIsAttacked));
-        System.out.println("  directAttackers:    " + format(m_numDirectAttackers));
-        System.out.println("  getAllAttackers:    " + format(m_numGetAllAttackers));
-        System.out.println("  isCheck:            " + format(m_numIsCheck));
-        System.out.println("  isMate:             " + format(m_numIsMate));
-        System.out.println("  isStaleMate:        " + format(m_numIsStaleMate));
-        System.out.println("  getAllMoves:        " + format(m_numGetAllMoves));
-        System.out.println("  getPinnedDirection: " + format(m_numGetPinnedDirection));
-        System.out.println("  doMove:             " + format(m_numDoMove));
-        System.out.println("    longs backuped    " + format(m_numLongsBackuped) + "  " + ((double)m_numLongsBackuped / m_numDoMove) + " per move");
-        System.out.println("  undoMove:           " + format(m_numUndoMove));
-        System.out.println("  set:                " + format(m_numSet));
-        System.out.println("  getSquare:          " + format(m_numGetSquare));
-    }
-    
     //======================================================================
     // Bit Board operations
     // put here for performance (inlining)
@@ -344,9 +292,7 @@ public final class Position extends AbstractMoveablePosition
     private int m_moveStackIndex;
 
     private final short[] m_moves = new short[256];   // buffer for getAllMoves, allocated once for efficiency
-    
-    //======================================================================
-    
+
     public static Position createInitialPosition()
     {
         return new Position (FEN.START_POSITION, true);
@@ -359,8 +305,6 @@ public final class Position extends AbstractMoveablePosition
     
     public Position(int bufferLength)
     {
-        if (PROFILE) m_numPositions++;
-        
         m_bakStack = new long[4 * bufferLength];  //on average, we need about 3.75 longs to backup a position
         m_moveStack = new short[bufferLength];
         clear();
@@ -382,9 +326,7 @@ public final class Position extends AbstractMoveablePosition
         this();
         FEN.initFromFEN(this, fen, true);
     }
-    
-    //======================================================================
-    
+
     public void clear()
     {
         super.clear();
@@ -405,8 +347,6 @@ public final class Position extends AbstractMoveablePosition
     
     public final int getStone(int sqi)
     {
-        if (PROFILE) m_numGetSquare++;
-        
         long bbSqi = ofSquare(sqi);
         if ((m_bbWhites & bbSqi) != 0L) {
             if ((m_bbPawns & bbSqi) != 0L) return Chess.WHITE_PAWN;
@@ -429,8 +369,6 @@ public final class Position extends AbstractMoveablePosition
     
     public final int getPiece(int sqi)
     {
-        if (PROFILE) m_numGetSquare++; // TODO
-        
         long bbSqi = ofSquare(sqi);
         if ((m_bbPawns & bbSqi) != 0L) return Chess.PAWN;
         if ((m_bbKnights & bbSqi) != 0L) return Chess.KNIGHT;
@@ -448,8 +386,6 @@ public final class Position extends AbstractMoveablePosition
      */
     public final int getColor(int sqi)
     {
-        if (PROFILE) m_numGetSquare++; // TODO
-        
         long bbSqi = ofSquare(sqi);
         if ((m_bbWhites & bbSqi) != 0L) return Chess.WHITE;
         if ((m_bbBlacks & bbSqi) != 0L) return Chess.BLACK;
@@ -477,13 +413,8 @@ public final class Position extends AbstractMoveablePosition
         }
     }
 
-
-    //======================================================================
-    
     public final void setStone(int sqi, int stone)
     {
-        if (PROFILE) m_numSet++;
-
         int old = getStone(sqi);
         if (old != stone) {
             long bbSqi = ofSquare(sqi);
@@ -849,8 +780,6 @@ public final class Position extends AbstractMoveablePosition
     
     private final void doMoveNoMoveListeners(short move) throws IllegalMoveException
     {
-        if (PROFILE) m_numDoMove++;
-        
         boolean notify = m_notifyPositionChanged;
         m_notifyPositionChanged = false;
         
@@ -889,8 +818,6 @@ public final class Position extends AbstractMoveablePosition
         m_bakStack[m_bakIndex] = 0L;
 
         m_notifyPositionChanged = notify;
-        
-        if (PROFILE) m_numLongsBackuped += numOfBitsSet(changeMask) + 2;
     }
     
     public boolean canUndoMove()
@@ -907,8 +834,6 @@ public final class Position extends AbstractMoveablePosition
     
     private boolean undoMoveNoMoveListeners()
     {
-        if (PROFILE) m_numUndoMove++;
-        
         boolean notify = m_notifyPositionChanged;
         m_notifyPositionChanged = false;
         
@@ -978,8 +903,6 @@ public final class Position extends AbstractMoveablePosition
     
     private final boolean redoMoveNoMoveListeners()
     {
-//        if (PROFILE) m_numRedoMove++;
-        
         boolean notify = m_notifyPositionChanged;
         m_notifyPositionChanged = false;
         
@@ -1034,9 +957,7 @@ public final class Position extends AbstractMoveablePosition
             return false;
         }
     }
-    
-    //======================================================================
-    
+
     public boolean isLegal()
     {
         if (!super.isLegal()) return false;  // =====>
@@ -1087,13 +1008,9 @@ public final class Position extends AbstractMoveablePosition
             throw new IllegalPositionException("Wrong hash code " + getHashCode() + " should be " + super.getHashCode() + " difference " + (getHashCode() - super.getHashCode()));
         }
     }
-    
-    //======================================================================
-    
+
     public final boolean isCheck()
     {
-        if (PROFILE) m_numIsCheck++;
-        
         int cacheInfo = (int)(m_flags >> CHECK_SHIFT) & CHECK_MASK;
         if (cacheInfo == FLAG_YES) {
             return true;
@@ -1119,20 +1036,14 @@ public final class Position extends AbstractMoveablePosition
     
     public boolean isMate()
     {
-        if (PROFILE) m_numIsMate++;
-        
         return isCheck() && !canMove();
     }
     
     public boolean isStaleMate()
     {
-        if (PROFILE) m_numIsStaleMate++;
-        
         return !isCheck() && !canMove();
     }
-    
-    //======================================================================
-    
+
     public short getLastShortMove()
     {
         return (m_moveStackIndex <= 0 ? Move.NO_MOVE : m_moveStack[m_moveStackIndex - 1]);
@@ -1264,9 +1175,7 @@ public final class Position extends AbstractMoveablePosition
         if (m_notifyListeners && m_changeListeners != null) fireMoveDone(move);        
         return m;
     }
-    
-    //======================================================================
-    
+
     /**
      * Returns the direction in which a piece on <code>sqi</code> is pinned in front of the king
      * of <code>color</code>. Returns <code>NO_DIR</code> if piece is not pinned.
@@ -1277,8 +1186,6 @@ public final class Position extends AbstractMoveablePosition
      **/
     private int getPinnedDirection(int sqi, int color)
     {
-        if (PROFILE) m_numGetPinnedDirection++;
-        
         int kingSqi = (color == Chess.WHITE ? m_whiteKing : m_blackKing);
         long bbSqi = ofSquare(sqi);
         
@@ -1347,13 +1254,9 @@ public final class Position extends AbstractMoveablePosition
                 default: throw new RuntimeException("Illegal piece: " + piece);
         }
     }
-    
-    //======================================================================
-    
+
     private final boolean isAttacked(int sqi, int attacker, long bbExclude)
     {
-        if (PROFILE) m_numIsAttacked++;
-        
         // only to print sqi, otherwise not needed
         if (sqi < 0 || sqi >63) throw new IllegalArgumentException("Illegal sqi: " + sqi);
         
@@ -1386,8 +1289,6 @@ public final class Position extends AbstractMoveablePosition
     
     private final long getDirectAttackers(int sqi, int color, boolean includeInbetweenSquares)
     {
-        if (PROFILE) m_numDirectAttackers++;
-        
         long attackers = 0L;
         long bbAttackerPieces = (color == Chess.WHITE ? m_bbWhites : m_bbBlacks);
         long bbAllPieces = m_bbWhites | m_bbBlacks;
@@ -1428,8 +1329,6 @@ public final class Position extends AbstractMoveablePosition
     
     private final long getAllAttackers(int sqi, int color)
     {
-        if (PROFILE) m_numGetAllAttackers++;
-        
         long attackers = 0L;
         long bbAttackerPieces = (color == Chess.WHITE ? m_bbWhites : m_bbBlacks);
         long bbAllPieces = m_bbWhites | m_bbBlacks;
@@ -1738,8 +1637,6 @@ public final class Position extends AbstractMoveablePosition
     
     private final short[] getAllMoves(long bbTargets, long bbPawnTargets)
     {
-        if (PROFILE) m_numGetAllMoves++;
-        
         if (bbTargets == 0L) return new short[0];  // =====>
         
         int moveIndex = 0;  // TODO: make class?
@@ -1843,9 +1740,7 @@ public final class Position extends AbstractMoveablePosition
         
         return sb.toString();
     }
-    
-    //======================================================================
-    
+
     public int getMaterial()
     {
         int value = 0;

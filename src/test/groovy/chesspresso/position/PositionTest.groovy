@@ -45,22 +45,27 @@ class PositionTest extends Specification {
         Move.getFromSqi(moves[0]) == Chess.B1
         Move.getToSqi(moves[0]) == Chess.A3
         p.getPieceMove(Chess.KNIGHT, 1, 0, Chess.A3) == moves[0]
+        p.getMove(Chess.B1,Chess.A3,Chess.KNIGHT) == moves[0]
 
         Move.getFromSqi(moves[1]) == Chess.B1
         Move.getToSqi(moves[1]) == Chess.C3
         p.getPieceMove(Chess.KNIGHT, 1, 0, Chess.C3) == moves[1]
+        p.getMove(Chess.B1,Chess.C3,Chess.KNIGHT) == moves[1]
 
         Move.getFromSqi(moves[2]) == Chess.G1
         Move.getToSqi(moves[2]) == Chess.F3
         p.getPieceMove(Chess.KNIGHT, 6, 0, Chess.F3) == moves[2]
+        p.getMove(Chess.G1,Chess.F3,Chess.KNIGHT) == moves[2]
 
         Move.getFromSqi(moves[3]) == Chess.G1
         Move.getToSqi(moves[3]) == Chess.H3
         p.getPieceMove(Chess.KNIGHT, 6, 0, Chess.H3) == moves[3]
+        p.getMove(Chess.G1,Chess.H3,Chess.KNIGHT) == moves[3]
 
         Move.getFromSqi(moves[4]) == Chess.A2
         Move.getToSqi(moves[4]) == Chess.A3
         p.getPawnMove(Chess.NO_COL, Chess.A3, Chess.NO_PIECE) == moves[4]
+        p.getMove(Chess.A2,Chess.A3,Chess.PAWN) == moves[4]
 
         when: 'play 1.Na3'
         p.doMove(moves[0])
@@ -147,10 +152,15 @@ class PositionTest extends Specification {
         moves.length == 9
         Move.getFromSqi(moves[0]) == Chess.E2
         Move.getToSqi(moves[0]) == Chess.E3
+        p.getMove(Chess.E2,Chess.E3,Chess.ROOK) == moves[0]
         Move.getToSqi(moves[1]) == Chess.E4
+        p.getMove(Chess.E2,Chess.E4,Chess.ROOK) == moves[1]
         Move.getToSqi(moves[2]) == Chess.E5
+        p.getMove(Chess.E2,Chess.E5,Chess.ROOK) == moves[2]
         Move.getToSqi(moves[3]) == Chess.E6
+        p.getMove(Chess.E2,Chess.E6,Chess.ROOK) == moves[3]
         Move.getToSqi(moves[4]) == Chess.E7
+        p.getMove(Chess.E2,Chess.E6,Chess.ROOK) == moves[4]
 
         when:
         p.inverse()
@@ -199,12 +209,16 @@ class PositionTest extends Specification {
         moves.length == 48
         Move.getFromSqi(moves[0]) == Chess.C3
         Move.getToSqi(moves[0]) == Chess.B1
+        p.getMove(Chess.C3,Chess.B1,Chess.KNIGHT) == moves[0]
         Move.getFromSqi(moves[1]) == Chess.C3
         Move.getToSqi(moves[1]) == Chess.D1
+        p.getMove(Chess.C3,Chess.D1,Chess.KNIGHT) == moves[1]
         Move.getFromSqi(moves[2]) == Chess.C3
         Move.getToSqi(moves[2]) == Chess.A4
+        p.getMove(Chess.C3,Chess.A4,Chess.KNIGHT) == moves[2]
         Move.getFromSqi(moves[3]) == Chess.C3
         Move.getToSqi(moves[3]) == Chess.B5
+        p.getMove(Chess.C3,Chess.B5,Chess.KNIGHT) == moves[3]
 
         when:
         p.inverse()
@@ -253,12 +267,16 @@ class PositionTest extends Specification {
         moves.length == 14
         Move.getFromSqi(moves[0]) == Chess.B4
         Move.getToSqi(moves[0]) == Chess.B3
+        p.getMove(Chess.B4,Chess.B3,Chess.ROOK) == moves[0]
         Move.getFromSqi(moves[1]) == Chess.B4
         Move.getToSqi(moves[1]) == Chess.B2
+        p.getMove(Chess.B4,Chess.B2,Chess.ROOK) == moves[1]
         Move.getFromSqi(moves[2]) == Chess.B4
         Move.getToSqi(moves[2]) == Chess.B1
+        p.getMove(Chess.B4,Chess.B1,Chess.ROOK) == moves[2]
         Move.getFromSqi(moves[3]) == Chess.B4
         Move.getToSqi(moves[3]) == Chess.C4
+        p.getMove(Chess.B4,Chess.C4,Chess.ROOK) == moves[3]
 
         when:
         p.inverse()

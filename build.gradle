@@ -38,8 +38,8 @@ pitest {
 //    targetTests = ['chesspresso.position.CompactPositionTest']
 //    targetClasses = ['chesspresso.position.*', 'chesspresso.move.*']  //by default "${project.group}.*"
 //    targetTests = ['chesspresso.*']
-    targetClasses = ['chesspresso.game.*']  //by default "${project.group}.*"
-    targetTests = ['chesspresso.game.*']
+    targetClasses = ['chesspresso.*']  //by default "${project.group}.*"
+    targetTests = ['chesspresso.*']
     //adds dependency to org.pitest:pitest-junit5-plugin and sets "testPlugin" to "junit5"
     junit5PluginVersion = '1.0.0'
 }
